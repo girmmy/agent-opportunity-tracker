@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowUpRight, Lock, LoaderCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input, Label } from '@/components/ui/input';
+import { GitHubMark } from '@/components/icons';
 
 function LoginForm() {
   const router = useRouter();
@@ -117,11 +118,11 @@ function LoginForm() {
 
       {/*
         The login screen is the only surface anyone sees without the password,
-        so it's the one place attribution actually reaches people. Pinned to the
-        bottom, clear of the home indicator on notched iPhones.
+        so it's the one place attribution and a source link actually reach
+        people. Both sit clear of the home indicator on notched iPhones.
 
-        Forking this? Change or delete this block — it's the only hardcoded
-        attribution in the project.
+        Forking this? Change or delete these two blocks — they're the only
+        hardcoded attribution in the project.
       */}
       <footer
         className="absolute inset-x-0 flex justify-center"
@@ -140,6 +141,23 @@ function LoginForm() {
           </a>
         </p>
       </footer>
+
+      {/* Source link, for the people who'd want it. Corner-anchored so it never
+          competes with the sign-in card or the credit line. */}
+      <a
+        href="https://github.com/girmmy/opportunity-tracker"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="View the source on GitHub"
+        title="View the source on GitHub"
+        className="absolute grid size-11 place-items-center rounded-full text-[var(--label-3)] transition-all duration-150 hover:bg-[var(--surface)] hover:text-[var(--label)] active:scale-[0.94]"
+        style={{
+          bottom: 'max(0.75rem, env(safe-area-inset-bottom))',
+          right: 'max(0.75rem, env(safe-area-inset-right))',
+        }}
+      >
+        <GitHubMark className="size-[19px]" />
+      </a>
 
       <style>{`
         @keyframes shake {

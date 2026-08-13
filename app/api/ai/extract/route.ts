@@ -50,7 +50,7 @@ and a wrong one costs them attention. Therefore:
   null — you do not know today's date.
 - Never invent a URL. Only return one that literally appears in the text.
 - opportunity_type: Internship, Contract (paid gig or freelance), Program
-  (fellowship, cohort, ambassador scheme), Research, Scholarship, or Full-time.
+  (fellowship, cohort, ambassador scheme), Research, or Full-time.
 - category: the domain of the work — SWE, AI/ML, Product, Data, Research,
   Other, or Unclear when the posting does not make it obvious.
 - Keep role as the actual posted title, including any requisition number if one

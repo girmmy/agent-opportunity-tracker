@@ -1,9 +1,9 @@
 # Agent Opportunity Tracker
 
-An open-source, self-hosted tracker for internships, jobs, programs, research, and
-scholarships — that also ships as a Claude/Codex skill. Point your agent at it and it sweeps
-your inbox on a schedule, updates your rows from what it finds, drafts you a digest of where
-everything stands, and tailors your résumé for a posting when you ask.
+An open-source, self-hosted tracker for internships, jobs, programs, and research — that
+also ships as a Claude/Codex skill. Point your agent at it and it sweeps
+your inbox on a schedule, updates your rows from what it finds, pings you when something
+needs attention, and tailors your résumé for a posting when you ask.
 
 Password-gated and single-user. Your data lives in **your** Supabase project; nobody else's
 server ever sees it. Everything agent-related is optional — it works as a plain tracker with
@@ -20,8 +20,8 @@ Radix primitives · Vercel
   where everything stands, and a nudge for applications that have gone quiet.
 - **Everything in one table** — filter by type, status, fit, or cycle; show and hide
   columns; sort; edit inline. Table on desktop, cards on mobile.
-- **Six opportunity types** — Internship, Contract, Program, Research, Scholarship,
-  Full-time — tracked across multiple cycles, so it doesn't go stale after one season.
+- **Five opportunity types** — Internship, Contract, Program, Research, Full-time —
+  tracked across multiple cycles, so it doesn't go stale after one season.
 - **A fit rating** you set honestly (Strong / Good / Weak / Unknown), plus which résumé
   you sent and a link to the original listing.
 - **Upload your résumé** and the profile fills itself in — PDF, DOCX, or text, parsed
@@ -38,12 +38,12 @@ Radix primitives · Vercel
   interview invitations, offers, assessment deadlines, things you applied to and forgot to
   log. It writes only unambiguous signals and flags the judgement calls instead of guessing,
   because a tracker you have to double-check is worse than the spreadsheet it replaced.
-- **A digest of where everything stands** — each run ends with an email **drafted** (never
-  sent) covering what changed, what it deliberately didn't write, what's waiting on *you*
-  with a real deadline, and what's had no reply in three weeks. It stays quiet on days with
-  nothing to report — a daily email that's usually empty trains you to ignore the one that
-  matters. [The full prompt is in this README](#automate-it-with-an-ai-agent), ready to
-  paste.
+- **A nudge when something needs you** — each run ends by telling you what you'd act on
+  today: a deadline inside a week, an assessment not started, a reply that never came. Not
+  "sweep complete" — that's noise you learn to dismiss. And nothing at all on a quiet day,
+  because a daily ping that's usually empty is how you end up ignoring the one that matters.
+  The detail stays in the tracker, which is where you'd go to act on it anyway.
+  [The full prompt is in this README](#automate-it-with-an-ai-agent), ready to paste.
 
   *This part is the agent's doing, not the app's* — the app exposes the API, and your
   assistant does the reading and writing. You need an agent with email access and a
@@ -289,14 +289,14 @@ right now" a single query instead of a six-way union.
 
 | Field | Notes |
 |---|---|
-| `opportunity_type` | Internship · Contract · Program · Research · Scholarship · Full-time |
+| `opportunity_type` | Internship · Contract · Program · Research · Full-time |
 | `category` | SWE · AI/ML · Product · Data · Research · Other · Unclear |
 | `cycle` | Free text — `Summer 2027`, `Ongoing`. This is what makes it multi-year: filter by cycle, archive old ones rather than deleting. |
 | `status` | Not Applied Yet → In Progress → Waiting → Interview → Offer Received → Accepted / Active → Completed. Plus Return Offer, Rejected, Withdrawn / Lapsed. |
 | `fit` | Strong / Good / Weak / Unknown. Rate it only after actually reading the posting — `Unknown` is the honest default. |
 | `resume_used` | Filename of whatever you submitted |
 | `listing_url` | The original posting |
-| `details` | JSONB for type-specific extras (scholarship award, contract rate, interview date, research lab) — add a type without a migration |
+| `details` | JSONB for type-specific extras (contract rate, interview date, research lab) — add a type without a migration |
 
 ---
 
@@ -453,7 +453,7 @@ Auto-update ONLY on unambiguous signals:
 
 Do NOT auto-write when you are inferring. Vague "we'll be in touch", marketing
 that merely names a company, anything you're guessing at — put those in the
-digest instead. A wrong status is more expensive than a missing one, because
+notification instead. A wrong status is more expensive than a missing one, because
 I'll trust the tracker and stop checking.
 
 Append to notes, never replace. Use YYYY-MM-DD. Trust an explicit date from a
@@ -469,24 +469,28 @@ fit" is noise. Flag hard eligibility barriers separately from skill fit.
 Each run, try to upgrade a couple of Unknown rows by finding and reading the
 real posting. Prefer open rows still awaiting a reply.
 
-## The digest
-Draft an email to <MY_EMAIL>, subject "Tracker update — <today's date>":
-  1. What you changed automatically — first, so a wrong call is easy to catch
-  2. Anything ambiguous you deliberately did not write
-  3. Anything where the ball is in my court — pending assessments, forms,
-     unanswered scheduling requests. These carry real deadlines.
-  4. Applications with no reply in 21+ days, worst first
-  5. Include <APP_URL>
+## Telling me
+Notify me — a push notification, one line, under 200 characters. Not an email
+and not a draft: a draft I have to remember to open is not an update, and the
+detail already lives in the tracker you just updated.
 
-Draft it — do not send it.
+Lead with what I'd act on today — deadlines, anything where the ball is in my
+court. Then what changed. Then a count of anything you deliberately did not
+write, so I know to look. Include <APP_URL> when there's something to go see.
 
-Skip the digest entirely on a genuinely quiet day. A daily email that's usually
-empty trains me to ignore it, and then I miss the one that mattered.
+  Good: "Roblox OA due in 2 days · Stripe rejected · 2 unclear, check the app"
+  Bad:  "Daily sweep finished successfully."
+
+On a genuinely quiet day, send nothing at all.
+
+Anything ambiguous goes in that row's `notes`, where I'll see it in context —
+not into a message I have to cross-reference.
 
 ## Fail loudly
 If the API is unreachable, the token is rejected, or the email search fails,
-say so at the top of a draft. Do not report a clean run. A silent failure on a
-schedule is worse than a visible one, because I'll assume it's working.
+notify me, even on an otherwise quiet day, and say it plainly — "sweep FAILED:
+token rejected". Never report a clean run you did not have. A silent failure on
+a schedule is worse than a visible one, because I'll assume it's working.
 ```
 
 Then schedule it daily. On a local scheduler that means "runs when your machine is on" —

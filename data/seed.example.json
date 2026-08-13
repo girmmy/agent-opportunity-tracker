@@ -68,24 +68,5 @@
     "details": {
       "start_date": "2026-06-01"
     }
-  },
-  {
-    "organization": "Umbrella Foundation",
-    "role": "Undergraduate Scholarship",
-    "opportunity_type": "Scholarship",
-    "category": "Other",
-    "cycle": "2026-27",
-    "status": "Not Applied Yet",
-    "fit": "Good",
-    "date_applied": null,
-    "deadline": "2026-12-01",
-    "listing_url": null,
-    "resume_used": null,
-    "source": "target list",
-    "notes": "Essay required.",
-    "details": {
-      "award_amount": 5000,
-      "essay_required": true
-    }
   }
 ]

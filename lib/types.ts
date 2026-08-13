@@ -3,7 +3,6 @@ export const OPPORTUNITY_TYPES = [
   'Contract',
   'Program',
   'Research',
-  'Scholarship',
   'Full-time',
 ] as const;
 export type OpportunityType = (typeof OPPORTUNITY_TYPES)[number];
@@ -112,7 +111,6 @@ export const TYPE_COLORS: Record<OpportunityType, string> = {
   Contract: 'var(--orange)',
   Program: 'var(--indigo)',
   Research: 'var(--blue)',
-  Scholarship: 'var(--yellow)',
   'Full-time': 'var(--label-2)',
 };
 

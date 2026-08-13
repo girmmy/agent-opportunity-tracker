@@ -71,8 +71,8 @@ Write it for a competent stranger, because that's effectively what starts each s
 
 ### 3. Schedule it
 
-A recurring task that sweeps email and updates the tracker. Ours runs daily and writes a
-digest as a draft email.
+A recurring task that sweeps email and updates the tracker. Ours runs daily and ends with a
+push notification saying what needs attention.
 
 **The README has the full prompt** — copy-pasteable, with three placeholders to fill in.
 It's the real one, generalized. Start there rather than writing your own; most of its
@@ -81,10 +81,14 @@ things.
 
 Two things worth building in:
 
-- **Skip the digest on quiet days.** A daily email that's usually empty trains you to
-  ignore it, and then you miss the one that mattered.
+- **A notification, not an email.** Whatever you use has to reach you without you going to
+  look — that is the entire point of a scheduled run. A draft sitting in a folder is not an
+  update, and re-stating the tracker's contents in prose is work that produces nothing. Say
+  what needs attention; leave the detail in the app.
+- **Skip it entirely on quiet days.** A daily ping that's usually empty trains you to ignore
+  it, and then you miss the one that mattered.
 - **Fail loudly.** If the API is down or a token is rejected, it should say so at the top
-  of the digest. A silent failure on a schedule is worse than a visible one, because you
+  of the notification. A silent failure on a schedule is worse than a visible one, because you
   assume it's working.
 
 ---
@@ -168,5 +172,5 @@ but because an automated writer and a single copy of your data is a bad pairing.
   server-side cron hitting an endpoint.
 - **The agent is only as good as your rules file.** Vague context produces vague output,
   and a fit rating you can't act on is noise.
-- **Review the digest.** The point is to spend a minute a day instead of an hour a week —
+- **Read the notifications.** The point is to spend a minute a day instead of an hour a week —
   not zero minutes. Anything it wrote automatically should be glanceable and correctable.

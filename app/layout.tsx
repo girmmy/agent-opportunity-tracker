@@ -5,7 +5,7 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'Agent Opportunity Tracker',
   description:
-    'Internships, contracts, programs, research, and scholarships — kept current by an agent.',
+    'Internships, contract work, programs, and research — kept current by an agent.',
   robots: { index: false, follow: false },
   appleWebApp: { capable: true, statusBarStyle: 'default', title: 'Tracker' },
 };

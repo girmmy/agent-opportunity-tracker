@@ -1,6 +1,6 @@
 ---
 name: opportunity-tracker
-description: Read and update the user's Opportunity Tracker — the job/internship/scholarship tracker at their own deployed URL. Use this whenever the user asks about their applications, deadlines, interviews, or where something stands; when they want their inbox swept for application updates; when they paste a job posting and want it logged or rated; or when they ask what to apply to next. Also use it before drafting any application material, since it holds the profile that material should be based on.
+description: Read and update the user's Opportunity Tracker — the internship, job, program, and research tracker at their own deployed URL. Use this whenever the user asks about their applications, deadlines, interviews, or where something stands; when they want their inbox swept for application updates; when they paste a job posting and want it logged or rated; or when they ask what to apply to next. Also use it before drafting any application material, since it holds the profile that material should be based on.
 ---
 
 # Opportunity Tracker
@@ -111,6 +111,7 @@ outnumber the recruiting mail.
 ## Hard rules
 
 - **Never submit an application.** Fill the form, stop before submit, hand it back.
+- **Never email another person on their behalf.** Draft it and leave it for them to send.
 - **Never create an account** on a job portal or anywhere else.
 - **Never guess anything with legal weight** — work authorization, citizenship, visa status,
   veteran or disability self-identification. Ask. A wrong guess here goes onto a form the
@@ -128,8 +129,19 @@ outnumber the recruiting mail.
 Lead with what needs a decision this week — deadlines inside seven days, interviews to
 prepare for, assessments not started. Then what changed. Then everything else, briefly.
 
-Skip the summary entirely on a quiet day. A daily digest that's usually empty trains the
+Skip the summary entirely on a quiet day. A daily report that's usually empty trains the
 user to ignore it, and then they miss the one that mattered.
 
 If a call failed or a token was rejected, say so at the top. A silent failure on a schedule
 is worse than a loud one, because it reads as "nothing happened."
+
+**Running unattended, on a schedule?** Push the user a notification — one line, leading with
+what they'd act on today. That is the whole report.
+
+Not an email, and not a draft. A draft they have to remember to open is not an update, and
+the detail already has a home: the tracker you just finished updating. Send nothing at all
+on a genuinely quiet day; a daily ping that is usually empty is how someone learns to ignore
+the one that mattered.
+
+Anything ambiguous belongs in that row's `notes`, where they will see it in context, rather
+than in a message they have to cross-reference.

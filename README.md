@@ -1,10 +1,12 @@
-# Opportunity Tracker
+# Agent Opportunity Tracker
 
-A private, password-gated tracker for internships, contract work, programs, research
-positions, and scholarships — because spreadsheets don't work from a phone and don't sync.
+An open-source, self-hosted tracker for internships, jobs, programs, research, and
+scholarships — that also ships as a Claude/Codex skill, so your agent can connect to it,
+keep it current from your inbox, and tailor your résumé for a posting when you want that.
 
-Built for one person, self-hosted. Your data lives in **your** Supabase project; nobody
-else's server ever sees it.
+Password-gated and single-user. Your data lives in **your** Supabase project; nobody else's
+server ever sees it. Everything agent-related is optional — it works as a plain tracker with
+no API key, no agent, and no automation.
 
 **Stack:** Next.js 16 (App Router) · TypeScript · Supabase/Postgres · Tailwind v4 ·
 Radix primitives · Vercel
@@ -21,8 +23,15 @@ Radix primitives · Vercel
   Full-time — tracked across multiple cycles, so it doesn't go stale after one season.
 - **A fit rating** you set honestly (Strong / Good / Weak / Unknown), plus which résumé
   you sent and a link to the original listing.
-- **Optional AI assist** — paste a job description and either pre-fill the form or get an
-  honest fit read against your stored profile. Off unless you supply an API key.
+- **Upload your résumé** and the profile fills itself in — PDF, DOCX, or text, parsed
+  locally.
+- **Optional AI assist** — paste a posting and pre-fill the form, get an honest fit read, or
+  tailor your résumé against it. Tailoring only reorders and rewords what's already in your
+  profile; it will tell you when a gap is real rather than papering over it. All off unless
+  you supply an API key, billed to your own account.
+- **Doubles as an agent skill** — [`skill/SKILL.md`](skill/SKILL.md) drops into Claude Code,
+  Codex, or Cursor and drives everything above through a bearer-token API. It carries no
+  personal data; it reads yours from your own deployment at runtime.
 
 ---
 

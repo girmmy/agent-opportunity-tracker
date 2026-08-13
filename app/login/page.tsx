@@ -2,7 +2,7 @@
 
 import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ArrowUpRight, Lock, LoaderCircle } from 'lucide-react';
+import { ArrowUpRight, LoaderCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input, Label } from '@/components/ui/input';
 import { GitHubMark } from '@/components/icons';
@@ -56,16 +56,14 @@ function LoginForm() {
           (shake ? 'animate-[shake_0.45s_ease-in-out]' : '')
         }
       >
-        <div className="mb-5 flex flex-col items-center text-center">
-          <div className="mb-3.5 grid size-12 place-items-center rounded-[14px] bg-[var(--accent)] shadow-[var(--shadow-md)]">
-            <Lock className="size-5 text-white" strokeWidth={2.5} />
-          </div>
-          {/* Same wordmark as the nav bar, so it gets the same treatment — a
-              logo that changes face between screens reads as an accident. */}
-          <h1 className="text-[21px] font-semibold leading-tight tracking-[-0.021em]">
+        {/* No icon. A tinted rounded square with a padlock in it is the house
+            style of every generated login screen — and it says nothing the
+            password field doesn't already say. Type carries it instead. */}
+        <div className="mb-6 text-center">
+          <h1 className="text-[24px] font-semibold leading-tight tracking-[-0.023em]">
             Opportunity Tracker
           </h1>
-          <p className="mt-1.5 text-[13px] text-[var(--label-2)]">
+          <p className="mt-2 text-[13.5px] text-[var(--label-2)]">
             Enter your password to continue
           </p>
         </div>

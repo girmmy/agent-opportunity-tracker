@@ -84,6 +84,32 @@ Two things worth building in:
 
 ---
 
+## Searching email is harder than it looks
+
+The single biggest failure mode isn't the agent writing something wrong — it's the agent
+**not finding** something and reporting a clean run. A missed email looks identical to
+"nothing happened."
+
+Three things that break a naive search, all of which we hit for real:
+
+**Keyword filters drop the important mail.** Gating on `intern OR internship OR
+application OR interview` silently loses deadline extensions, rescheduling notices, ticket
+replies, and document requests. Those are exactly the time-sensitive ones. Search by
+organization name and by sender, not by job vocabulary.
+
+**The sender is usually not the company.** A Roblox assessment extension arrived from
+`support@roblox-assessment.zendesk.com`. Recruiting routes through Greenhouse, Lever,
+Ashby, Workday, SuccessFactors, Workable, iCIMS, SmartRecruiters, Jobvite, Taleo, Zendesk,
+Calendly, Google Calendar, and background-check vendors like Certn and Checkr. Searching
+`from:company.com` finds almost none of it.
+
+**Half the thread is outgoing.** If you emailed a recruiter asking for an extension, a
+`from:` search cannot see it — and your own action changed the state of that application
+just as much as theirs would. Include sent mail, and look for things *you* started.
+
+Also: a company that is both an employer and a consumer product will flood the results
+with noise. Roblox game receipts and login codes are not recruiting mail.
+
 ## The rules that actually matter
 
 These are the ones worth being strict about. Most were learned the annoying way.

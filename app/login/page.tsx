@@ -2,7 +2,7 @@
 
 import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Lock, LoaderCircle } from 'lucide-react';
+import { ArrowUpRight, Lock, LoaderCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input, Label } from '@/components/ui/input';
 
@@ -48,7 +48,7 @@ function LoginForm() {
   }
 
   return (
-    <div className="grid min-h-[100dvh] place-items-center p-6">
+    <div className="relative grid min-h-[100dvh] place-items-center p-6">
       <div
         className={
           'w-full max-w-[360px] rounded-[var(--radius-apple-xl)] bg-[var(--surface)] p-7 shadow-[var(--shadow-lg)] ' +
@@ -114,6 +114,32 @@ function LoginForm() {
           )}
         </form>
       </div>
+
+      {/*
+        The login screen is the only surface anyone sees without the password,
+        so it's the one place attribution actually reaches people. Pinned to the
+        bottom, clear of the home indicator on notched iPhones.
+
+        Forking this? Change or delete this block — it's the only hardcoded
+        attribution in the project.
+      */}
+      <footer
+        className="absolute inset-x-0 flex justify-center"
+        style={{ bottom: 'max(1.5rem, env(safe-area-inset-bottom))' }}
+      >
+        <p className="text-[13px] text-[var(--label-3)]">
+          made by{' '}
+          <a
+            href="https://gimmy-samson.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-0.5 font-medium text-[var(--label-2)] underline decoration-[var(--separator-opaque)] underline-offset-[3px] transition-colors hover:text-[var(--accent)] hover:decoration-[var(--accent)]"
+          >
+            gimmy
+            <ArrowUpRight className="size-3.5" strokeWidth={2.2} />
+          </a>
+        </p>
+      </footer>
 
       <style>{`
         @keyframes shake {

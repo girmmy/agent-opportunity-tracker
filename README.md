@@ -180,6 +180,11 @@ bearer token instead.
 
 ## Notes
 
+The login screen carries a **"made by gimmy"** credit — it's the only hardcoded
+attribution in the project, and the only surface anyone sees without the password. If
+you fork this, change or delete that block in `app/login/page.tsx`; it's marked with a
+comment.
+
 `data/seed.json` is gitignored — it's where real application history would live. The repo
 ships `data/seed.example.json` with fictional rows so a fresh clone runs end to end.
 

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
+import { agentAuthorized } from '@/lib/agent-auth';
 import { EDITABLE_FIELDS } from '@/lib/types';
 
 export const runtime = 'nodejs';
@@ -13,21 +14,6 @@ export const dynamic = 'force-dynamic';
  * deliberately skips this path so the check below is the only gate.
  */
 
-function authorized(request: Request): boolean {
-  const expected = process.env.AGENT_API_TOKEN;
-  if (!expected) return false;
-
-  const header = request.headers.get('authorization') ?? '';
-  const token = header.startsWith('Bearer ') ? header.slice(7) : '';
-  if (token.length !== expected.length) return false;
-
-  let diff = 0;
-  for (let i = 0; i < token.length; i++) {
-    diff |= token.charCodeAt(i) ^ expected.charCodeAt(i);
-  }
-  return diff === 0;
-}
-
 function pickEditable(body: Record<string, unknown>) {
   const out: Record<string, unknown> = {};
   for (const field of EDITABLE_FIELDS) {
@@ -37,7 +23,7 @@ function pickEditable(body: Record<string, unknown>) {
 }
 
 export async function GET(request: Request) {
-  if (!authorized(request)) {
+  if (!agentAuthorized(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -60,7 +46,7 @@ export async function GET(request: Request) {
  * updates the existing row instead of creating a duplicate.
  */
 export async function POST(request: Request) {
-  if (!authorized(request)) {
+  if (!agentAuthorized(request)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

@@ -277,14 +277,45 @@ right now" a single query instead of a six-way union.
 
 ---
 
-## Automation endpoint
+## Automation endpoints
 
-`POST /api/agent/opportunities` with `Authorization: Bearer $AGENT_API_TOKEN`. Accepts one
-object or an array, and upserts on `(organization, role, cycle)` so re-runs update rather
-than duplicate. `GET` returns everything.
+Two routes, both authenticated with `Authorization: Bearer $AGENT_API_TOKEN`. Deliberately
+outside the cookie auth — a script has no browser session — so each checks the bearer token
+itself.
 
-Deliberately outside the cookie auth — a script has no browser session — and checks its own
-bearer token instead.
+**`GET|POST /api/agent/opportunities`** — the rows. POST accepts one object or an array and
+upserts on `(organization, role, cycle)`, so re-runs update rather than duplicate.
+
+**`GET /api/agent/profile`** — who you are. Returns the profile plus a `prompt` field with
+it already flattened for reasoning, and a `usable` flag that's false when there isn't enough
+there to judge anything against.
+
+Read-only, on purpose. An agent sweeping your inbox has business updating application rows;
+it has no business rewriting who you are. Editing the profile stays behind the browser
+session, where a human is present.
+
+### Why the profile endpoint matters
+
+It's what lets a skill be shareable. Without it, anything that rates fit or tailors a résumé
+has to carry your background inside itself — which makes it unshareable, and makes every
+fork of it a copy of someone's private profile. With it, the skill ships as pure logic and
+fetches its subject from your deployment at runtime.
+
+That's the seam this repo is built around:
+
+| | The skill | This app |
+|---|---|---|
+| Who it's for | You | Anyone |
+| Contains | Logic and rules only | Schema only — no personal data |
+| Your data lives in | — | Your own Supabase |
+| Shareable | Yes | Yes, that's the point |
+
+They meet at exactly one place: the skill calls the API. You can deploy this and never use a
+skill, or swap the skill out entirely, and neither one breaks.
+
+**A ready-made skill is in [`skill/SKILL.md`](skill/SKILL.md).** Copy that folder into your
+agent's skills directory (`~/.claude/skills/opportunity-tracker/` for Claude Code) and point
+it at your URL and token. It contains no personal data — safe to fork and check in.
 
 **This exists so you can point an AI assistant at your own tracker.** Pair it with a
 recurring task and a rules file and the boring parts — logging applications, updating

@@ -19,7 +19,7 @@ const SECTIONS: {
   {
     key: 'full_name',
     label: 'Your name',
-    placeholder: 'Girmachew Samson',
+    placeholder: 'Your full name',
     single: true,
   },
   {

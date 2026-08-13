@@ -102,8 +102,9 @@ application OR interview` silently loses deadline extensions, rescheduling notic
 replies, and document requests. Those are exactly the time-sensitive ones. Search by
 organization name and by sender, not by job vocabulary.
 
-**The sender is usually not the company.** A Roblox assessment extension arrived from
-`support@roblox-assessment.zendesk.com`. Recruiting routes through Greenhouse, Lever,
+**The sender is usually not the company.** One assessment-deadline extension we nearly
+missed arrived from a `…-assessment.zendesk.com` address with the company's name nowhere in
+the From field. Recruiting routes through Greenhouse, Lever,
 Ashby, Workday, SuccessFactors, Workable, iCIMS, SmartRecruiters, Jobvite, Taleo, Zendesk,
 Calendly, Google Calendar, and background-check vendors like Certn and Checkr. Searching
 `from:company.com` finds almost none of it.
@@ -113,7 +114,8 @@ Calendly, Google Calendar, and background-check vendors like Certn and Checkr. S
 just as much as theirs would. Include sent mail, and look for things *you* started.
 
 Also: a company that is both an employer and a consumer product will flood the results
-with noise. Roblox game receipts and login codes are not recruiting mail.
+with noise — order receipts and login codes from a company you also applied to are not
+recruiting mail, and they will outnumber the mail that is.
 
 ## The rules that actually matter
 

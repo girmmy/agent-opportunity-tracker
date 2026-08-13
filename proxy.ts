@@ -13,9 +13,13 @@ const PUBLIC_PATHS = ['/login', '/api/auth/login'];
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // The agent endpoint authenticates with its own bearer token, checked in the
-  // route handler itself, so it opts out of cookie auth here.
-  if (pathname === '/api/agent/opportunities') return NextResponse.next();
+  // The agent endpoints authenticate with their own bearer token, checked by
+  // agentAuthorized() in each route handler, so they opt out of cookie auth
+  // here. Matched by prefix rather than by exact path: naming one route meant a
+  // second agent route silently got the cookie gate and 401'd with a message
+  // about a session it was never going to have. Every route under this prefix
+  // must call agentAuthorized() — that check is the only gate they get.
+  if (pathname.startsWith('/api/agent/')) return NextResponse.next();
 
   const isPublic = PUBLIC_PATHS.some(
     (p) => pathname === p || pathname.startsWith(p + '/')

@@ -34,7 +34,8 @@ export function Hero({
   activeCount,
   awaitingCount,
 }: {
-  name: string;
+  /** Optional — set OWNER_NAME to be greeted by name, or leave it unset. */
+  name?: string;
   events: UpcomingEvent[];
   activeCount: number;
   awaitingCount: number;
@@ -100,8 +101,11 @@ export function Hero({
           className="rise serif mt-1.5 text-[38px] leading-[1.05] sm:text-[46px]"
           style={{ '--d': '70ms' } as React.CSSProperties}
         >
-          <span className="italic text-[var(--label-2)]">{greeting(now.getHours())},</span>{' '}
-          <span className="text-[var(--label)]">{name}</span>
+          <span className="italic text-[var(--label-2)]">
+            {greeting(now.getHours())}
+            {name ? ',' : ''}
+          </span>
+          {name && <> <span className="text-[var(--label)]">{name}</span></>}
         </h2>
 
         <p

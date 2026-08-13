@@ -1,4 +1,4 @@
--- Gimmy-Opportunity-Tracker — initial schema
+-- Opportunity Tracker — initial schema
 --
 -- Design note: one table with an `opportunity_type` discriminator rather than a
 -- table per type. The types share ~90% of their fields (org, status, dates, fit,

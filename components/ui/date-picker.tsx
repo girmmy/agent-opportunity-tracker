@@ -13,7 +13,7 @@ import 'react-day-picker/style.css';
  *
  * Parsing that with `new Date('2026-08-18')` is a trap: the ISO form is read as
  * UTC midnight, which renders as the *previous day* anywhere west of Greenwich
- * — so Gimmy in Atlanta would pick Aug 18 and see Aug 17. Constructing from
+ * — pick Aug 18 in a US timezone and you see Aug 17. Constructing from
  * explicit parts keeps everything in local time.
  */
 function parseISODate(value: string | null | undefined): Date | undefined {

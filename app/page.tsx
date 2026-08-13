@@ -144,7 +144,7 @@ export default async function OverviewPage() {
       {(!configured || error) && <SetupBanner error={error} />}
 
       <Hero
-        name="Gimmy"
+        name={process.env.OWNER_NAME}
         events={events}
         activeCount={active.length}
         awaitingCount={awaiting.length}

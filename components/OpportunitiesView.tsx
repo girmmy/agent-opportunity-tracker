@@ -11,6 +11,7 @@ import {
   Filter,
   Plus,
   Search,
+  Sparkles,
   Trash2,
   X,
 } from 'lucide-react';
@@ -318,7 +319,12 @@ export function OpportunitiesView({
   function cellFor(r: Opportunity, key: string) {
     switch (key) {
       case 'organization':
-        return <span className="font-medium">{r.organization}</span>;
+        return (
+          <span className="inline-flex items-center gap-1.5">
+            <span className="font-medium">{r.organization}</span>
+            {r.suggested_by_agent && <SuggestedTag />}
+          </span>
+        );
       case 'role':
         return <span className="text-[var(--label-2)]">{r.role}</span>;
       case 'opportunity_type':
@@ -752,6 +758,7 @@ export function OpportunitiesView({
                   </div>
 
                   <div className="mt-2.5 flex flex-wrap gap-1.5">
+                    {r.suggested_by_agent && <SuggestedTag />}
                     <Pill label={r.status} color={STATUS_COLORS[r.status]} />
                     <Pill
                       label={r.opportunity_type}
@@ -1045,5 +1052,24 @@ export function OpportunitiesView({
         )}
       </Dialog>
     </>
+  );
+}
+
+/**
+ * Marks a row an agent surfaced on its own.
+ *
+ * Deliberately quiet — it's provenance, not a status. It says "nobody has
+ * decided about this yet", which is exactly the thing you want to be able to
+ * see at a glance when a machine has been adding rows while you slept.
+ */
+function SuggestedTag() {
+  return (
+    <span
+      title="Found by your agent — you have not acted on this yet"
+      className="inline-flex items-center gap-1 rounded-full bg-[color-mix(in_srgb,var(--accent)_14%,transparent)] px-1.5 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.06em] text-[var(--accent)]"
+    >
+      <Sparkles className="size-2.5" strokeWidth={2.6} />
+      Suggested
+    </span>
   );
 }

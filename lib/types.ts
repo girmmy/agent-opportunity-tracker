@@ -53,6 +53,8 @@ export interface Opportunity {
   details: Record<string, unknown>;
   created_at: string;
   updated_at: string;
+  /** True when an agent surfaced this itself rather than the user logging it. */
+  suggested_by_agent?: boolean;
 }
 
 /** Fields a client is allowed to write. Everything else is server-managed. */
@@ -71,6 +73,7 @@ export const EDITABLE_FIELDS = [
   'source',
   'notes',
   'details',
+  'suggested_by_agent',
 ] as const;
 
 export const ACTIVE_STATUSES: Status[] = [

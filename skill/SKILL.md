@@ -60,6 +60,25 @@ Fields: `organization`, `role`, `opportunity_type`, `category`, `cycle`, `status
 The upsert key is `(organization, role, cycle)`. Match an existing row's spelling exactly or
 you'll create a duplicate instead of updating — read before you write.
 
+## Finding new opportunities
+
+Beyond tracking what the user already applied to, look for things they *should* see —
+postings that match their profile, programs opening for the coming cycle, deadlines
+approaching on things they have not logged.
+
+Add these with **`suggested_by_agent: true`** and `status: "Not Applied Yet"`. The app
+labels them "Suggested" so it is always clear the user never asked for this row and has
+not decided about it. Never set that flag on a row they created or applied to.
+
+Put the reason in `notes` — what in their profile it matches, and what it wants that they
+lack. A suggestion without a reason is just more rows to triage. Set `listing_url` so they
+can read it themselves; set `fit` honestly, and `Unknown` if you have not read the real
+posting. Do not pad the list: five suggestions worth reading beat thirty that are not, and
+a user who stops trusting the suggestions stops reading all of them.
+
+Check eligibility before suggesting. A role whose graduation window or enrolment
+requirement they do not meet is not a suggestion, it is noise.
+
 ## What to write automatically, and what to ask about
 
 Write without asking when the signal is unambiguous — a rejection letter, an interview

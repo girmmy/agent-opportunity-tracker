@@ -12,6 +12,18 @@ no API key, no agent, and no automation.
 **Stack:** Next.js 16 (App Router) · TypeScript · Supabase/Postgres · Tailwind v4 ·
 Radix primitives · Vercel
 
+<p align="center">
+  <img src="docs/screenshots/login.webp" width="32%" alt="Login screen, password-gated" />
+  <img src="docs/screenshots/overview.webp" width="32%" alt="Overview page: greeting, upcoming deadlines, a pipeline bar, and what's happening now" />
+  <img src="docs/screenshots/all.webp" width="32%" alt="Full table view with type tabs, filters, sort, and inline status editing" />
+</p>
+<p align="center">
+  <img src="docs/screenshots/profile.webp" width="49%" alt="Profile page with résumé upload and the fields fit analysis is judged against" />
+  <img src="docs/screenshots/mobile-overview.webp" width="49%" alt="Overview page on a phone" />
+</p>
+
+<p align="center"><sub>Screenshots use invented data — fictional people and placeholder companies, not a real account.</sub></p>
+
 ---
 
 ## What it does
@@ -38,6 +50,10 @@ Radix primitives · Vercel
   interview invitations, offers, assessment deadlines, things you applied to and forgot to
   log. It writes only unambiguous signals and flags the judgement calls instead of guessing,
   because a tracker you have to double-check is worse than the spreadsheet it replaced.
+- **Opportunities it finds for you** — the sweep also looks for postings worth your
+  attention and adds them as **Suggested**, with the reason in the notes and a link to the
+  listing. Tagged distinctly so a machine's guess never blends in with something you chose,
+  and left at *Not Applied Yet* until you decide.
 - **A nudge when something needs you** — each run ends by telling you what you'd act on
   today: a deadline inside a week, an assessment not started, a reply that never came. Not
   "sweep complete" — that's noise you learn to dismiss. And nothing at all on a quiet day,
@@ -297,6 +313,7 @@ right now" a single query instead of a six-way union.
 | `resume_used` | Filename of whatever you submitted |
 | `listing_url` | The original posting |
 | `details` | JSONB for type-specific extras (contract rate, interview date, research lab) — add a type without a migration |
+| `suggested_by_agent` | True when an agent surfaced the row itself; the UI labels it **Suggested** so it's clear you never asked for it |
 
 ---
 

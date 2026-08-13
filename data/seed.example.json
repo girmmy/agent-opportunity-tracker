@@ -1,0 +1,91 @@
+[
+  {
+    "organization": "Northwind Labs",
+    "role": "Software Engineer Intern, Summer 2027",
+    "opportunity_type": "Internship",
+    "category": "SWE",
+    "cycle": "Summer 2027",
+    "status": "Waiting for Response",
+    "fit": "Strong",
+    "date_applied": "2026-08-04",
+    "deadline": null,
+    "listing_url": "https://example.com/jobs/swe-intern",
+    "resume_used": "master",
+    "source": "email",
+    "notes": "Application received confirmation.",
+    "details": {}
+  },
+  {
+    "organization": "Contoso",
+    "role": "AI/ML Engineer Intern",
+    "opportunity_type": "Internship",
+    "category": "AI/ML",
+    "cycle": "Summer 2027",
+    "status": "Interview in Progress",
+    "fit": "Good",
+    "date_applied": "2026-07-20",
+    "deadline": "2026-09-01",
+    "listing_url": null,
+    "resume_used": "Sample - Contoso - AI ML.pdf",
+    "source": "referral",
+    "notes": "Phone screen scheduled.",
+    "details": {
+      "interview_date": "2026-09-01"
+    }
+  },
+  {
+    "organization": "Globex",
+    "role": "Research Assistant",
+    "opportunity_type": "Research",
+    "category": "Research",
+    "cycle": "2026-27",
+    "status": "Not Applied Yet",
+    "fit": "Unknown",
+    "date_applied": null,
+    "deadline": "2026-10-15",
+    "listing_url": null,
+    "resume_used": null,
+    "source": "target list",
+    "notes": "Applications open in the fall.",
+    "details": {
+      "lab": "Systems Group"
+    }
+  },
+  {
+    "organization": "Initech",
+    "role": "Generalist Contractor",
+    "opportunity_type": "Contract",
+    "category": "AI/ML",
+    "cycle": "Ongoing",
+    "status": "Accepted / Active",
+    "fit": "Strong",
+    "date_applied": "2026-06-01",
+    "deadline": null,
+    "listing_url": null,
+    "resume_used": "master",
+    "source": "inbound",
+    "notes": "Active engagement.",
+    "details": {
+      "start_date": "2026-06-01"
+    }
+  },
+  {
+    "organization": "Umbrella Foundation",
+    "role": "Undergraduate Scholarship",
+    "opportunity_type": "Scholarship",
+    "category": "Other",
+    "cycle": "2026-27",
+    "status": "Not Applied Yet",
+    "fit": "Good",
+    "date_applied": null,
+    "deadline": "2026-12-01",
+    "listing_url": null,
+    "resume_used": null,
+    "source": "target list",
+    "notes": "Essay required.",
+    "details": {
+      "award_amount": 5000,
+      "essay_required": true
+    }
+  }
+]

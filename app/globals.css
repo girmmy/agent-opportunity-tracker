@@ -1,0 +1,273 @@
+@import 'tailwindcss';
+
+/*
+  Apple-leaning design system.
+
+  Typography: system-ui resolves to SF Pro on macOS/iOS, so the native stack is
+  the authentic choice rather than loading a lookalike webfont.
+
+  Color: iOS system palette. Neutrals carry a slight blue bias (Apple's grays
+  are never pure neutral), and semantic colors are the actual system values so
+  they read as native on his devices.
+
+  Depth: Apple uses layered translucency and very soft, large-radius shadows
+  rather than borders. Surfaces stack light-on-light instead of being outlined.
+*/
+
+@theme {
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', system-ui,
+    'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, monospace;
+
+  --radius-apple: 0.75rem;
+  --radius-apple-lg: 1.125rem;
+  --radius-apple-xl: 1.375rem;
+
+  --ease-spring: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+:root {
+  /* iOS system colors, light */
+  --blue: #007aff;
+  --green: #34c759;
+  --indigo: #5856d6;
+  --orange: #ff9500;
+  --pink: #ff2d55;
+  --purple: #af52de;
+  --red: #ff3b30;
+  --teal: #30b0c7;
+  --yellow: #ffcc00;
+
+  --accent: var(--blue);
+  --accent-fg: #ffffff;
+
+  /* Grouped-background hierarchy, the way iOS layers surfaces */
+  --bg: #f2f2f7;
+  --surface: #ffffff;
+  --surface-2: #ffffff;
+  --surface-sunken: #e9e9ee;
+
+  --label: #000000;
+  --label-2: #3c3c4399;
+  --label-3: #3c3c434d;
+
+  --separator: #3c3c431f;
+  --separator-opaque: #c6c6c8;
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.04), 0 1px 3px rgb(0 0 0 / 0.06);
+  --shadow-md: 0 2px 8px rgb(0 0 0 / 0.06), 0 8px 24px rgb(0 0 0 / 0.06);
+  --shadow-lg: 0 8px 32px rgb(0 0 0 / 0.12), 0 2px 8px rgb(0 0 0 / 0.06);
+
+  --glass: rgb(255 255 255 / 0.72);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --blue: #0a84ff;
+    --green: #30d158;
+    --indigo: #5e5ce6;
+    --orange: #ff9f0a;
+    --pink: #ff375f;
+    --purple: #bf5af2;
+    --red: #ff453a;
+    --teal: #40c8e0;
+    --yellow: #ffd60a;
+
+    --accent: var(--blue);
+    --accent-fg: #ffffff;
+
+    --bg: #000000;
+    --surface: #1c1c1e;
+    --surface-2: #2c2c2e;
+    --surface-sunken: #121214;
+
+    --label: #ffffff;
+    --label-2: #ebebf599;
+    --label-3: #ebebf54d;
+
+    --separator: #54545899;
+    --separator-opaque: #38383a;
+
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+    --shadow-md: 0 2px 8px rgb(0 0 0 / 0.5), 0 8px 24px rgb(0 0 0 / 0.3);
+    --shadow-lg: 0 8px 32px rgb(0 0 0 / 0.6), 0 2px 8px rgb(0 0 0 / 0.4);
+
+    --glass: rgb(28 28 30 / 0.72);
+  }
+}
+
+:root[data-theme='dark'] {
+  --blue: #0a84ff;
+  --green: #30d158;
+  --indigo: #5e5ce6;
+  --orange: #ff9f0a;
+  --pink: #ff375f;
+  --purple: #bf5af2;
+  --red: #ff453a;
+  --teal: #40c8e0;
+  --yellow: #ffd60a;
+  --accent: var(--blue);
+  --accent-fg: #ffffff;
+  --bg: #000000;
+  --surface: #1c1c1e;
+  --surface-2: #2c2c2e;
+  --surface-sunken: #121214;
+  --label: #ffffff;
+  --label-2: #ebebf599;
+  --label-3: #ebebf54d;
+  --separator: #54545899;
+  --separator-opaque: #38383a;
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 2px 8px rgb(0 0 0 / 0.5), 0 8px 24px rgb(0 0 0 / 0.3);
+  --shadow-lg: 0 8px 32px rgb(0 0 0 / 0.6), 0 2px 8px rgb(0 0 0 / 0.4);
+  --glass: rgb(28 28 30 / 0.72);
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--label);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.47;
+    letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Apple sets tighter tracking as type scales up. */
+  h1 {
+    letter-spacing: -0.024em;
+  }
+  h2,
+  h3 {
+    letter-spacing: -0.019em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--accent) 24%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@utility glass {
+  background: var(--glass);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+}
+
+/* Numeric columns should never shift width as digits change. */
+@utility tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Radix open/close transitions, tuned to Apple's spring-ish easing. */
+@keyframes overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes content-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.animate-overlay-in {
+  animation: overlay-in 0.2s var(--ease-spring);
+}
+.animate-content-in {
+  animation: content-in 0.24s var(--ease-spring);
+}
+.animate-sheet-in {
+  animation: sheet-in 0.32s var(--ease-spring);
+}
+
+/* react-day-picker: restyle to match, rather than shipping its default look. */
+.rdp-root {
+  --rdp-accent-color: var(--accent);
+  --rdp-day-height: 2.25rem;
+  --rdp-day-width: 2.25rem;
+  --rdp-day_button-height: 2.25rem;
+  --rdp-day_button-width: 2.25rem;
+  --rdp-day_button-border-radius: 999px;
+  --rdp-selected-border: none;
+  --rdp-outside-opacity: 0.3;
+  --rdp-today-color: var(--accent);
+  font-size: 13px;
+}
+
+.rdp-month_caption {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  padding: 0 0 0.5rem;
+}
+
+.rdp-weekday {
+  color: var(--label-3);
+  font-weight: 500;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.rdp-day_button:hover:not([disabled]) {
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.rdp-selected .rdp-day_button {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+.rdp-today:not(.rdp-selected) .rdp-day_button {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.rdp-chevron {
+  fill: var(--accent);
+}

@@ -1,15 +1,17 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { ArrowUpRight, CalendarClock, Inbox } from 'lucide-react';
+import { ArrowUpRight, ChevronRight, Inbox } from 'lucide-react';
 import { loadOpportunities } from '@/lib/data';
 import { hasSession } from '@/lib/guard';
+import { collectEvents } from '@/lib/dates';
 import { TopBar } from '@/components/TopBar';
 import { SetupBanner } from '@/components/SetupBanner';
+import { Hero } from '@/components/Hero';
+import { Pipeline } from '@/components/Pipeline';
+import { StaleNudge } from '@/components/StaleNudge';
 import { Pill } from '@/components/Pill';
 import {
   ACTIVE_STATUSES,
-  CLOSED_STATUSES,
-  IN_FLIGHT_STATUSES,
   FIT_COLORS,
   OPPORTUNITY_TYPES,
   STATUS_COLORS,
@@ -19,139 +21,94 @@ import {
 
 export const dynamic = 'force-dynamic';
 
-function daysUntil(dateStr: string | null): number | null {
-  if (!dateStr) return null;
-  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateStr);
-  if (!m) return null;
-  const target = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  return Math.round((target.getTime() - today.getTime()) / 86_400_000);
-}
-
-function friendlyDate(dateStr: string | null): string | null {
-  if (!dateStr) return null;
-  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateStr);
-  if (!m) return dateStr;
-  return new Date(
-    Number(m[1]),
-    Number(m[2]) - 1,
-    Number(m[3])
-  ).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-}
-
-function Stat({
-  n,
-  label,
-  color,
-}: {
-  n: number;
-  label: string;
-  color?: string;
-}) {
+/** Prominent card — used for the handful of things that are actually live. */
+function FeatureCard({ o }: { o: Opportunity }) {
+  const accent = STATUS_COLORS[o.status];
   return (
-    <div className="rounded-[var(--radius-apple)] bg-[var(--surface)] p-3.5 shadow-[var(--shadow-sm)]">
-      <div
-        className="tnum text-[27px] font-semibold leading-none tracking-[-0.022em]"
-        style={color ? { color } : undefined}
-      >
-        {n}
-      </div>
-      <div className="mt-1.5 text-[12px] font-medium text-[var(--label-2)]">
-        {label}
-      </div>
-    </div>
-  );
-}
-
-function Row({ o, showDeadline }: { o: Opportunity; showDeadline?: boolean }) {
-  const d = showDeadline ? daysUntil(o.deadline) : null;
-  const urgent = d !== null && d <= 7;
-
-  return (
-    <div className="flex items-start gap-3 px-4 py-3">
-      <div className="min-w-0 flex-1">
-        <div className="truncate text-[15px] font-medium tracking-[-0.01em]">
-          {o.role}
+    <div
+      className="rounded-[var(--radius-apple-lg)] p-4 shadow-[var(--shadow-sm)]"
+      style={{ background: `color-mix(in srgb, ${accent} 8%, var(--surface))` }}
+    >
+      <div className="flex items-start gap-3">
+        <div className="min-w-0 flex-1">
+          <div className="text-[17px] font-semibold leading-snug tracking-[-0.019em]">
+            {o.role}
+          </div>
+          <div className="mt-0.5 text-[14px] text-[var(--label-2)]">
+            {o.organization}
+            {o.cycle ? ` · ${o.cycle}` : ''}
+          </div>
         </div>
-        <div className="mt-0.5 truncate text-[13px] text-[var(--label-2)]">
-          {o.organization}
-          {o.cycle ? ` · ${o.cycle}` : ''}
-        </div>
-        <div className="mt-2 flex flex-wrap gap-1.5">
-          <Pill label={o.status} color={STATUS_COLORS[o.status]} />
-          <Pill
-            label={o.opportunity_type}
-            color={TYPE_COLORS[o.opportunity_type]}
-          />
-          {o.fit !== 'Unknown' && (
-            <Pill label={`${o.fit} fit`} color={FIT_COLORS[o.fit]} />
-          )}
-        </div>
-      </div>
-
-      <div className="flex shrink-0 flex-col items-end gap-1.5">
-        {d !== null && (
-          <span
-            className="tnum whitespace-nowrap rounded-full px-2 py-0.5 text-[11.5px] font-semibold"
-            style={{
-              color: urgent ? 'var(--red)' : 'var(--label-2)',
-              background: urgent
-                ? 'color-mix(in srgb, var(--red) 12%, transparent)'
-                : 'var(--surface-sunken)',
-            }}
-          >
-            {d === 0 ? 'Today' : d === 1 ? 'Tomorrow' : `${d}d`}
-          </span>
-        )}
         {o.listing_url && (
           <a
             href={o.listing_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[var(--label-3)] transition-colors hover:text-[var(--accent)]"
             aria-label="Open listing"
+            className="grid size-8 shrink-0 place-items-center rounded-full bg-[var(--surface)] text-[var(--label-2)] transition-colors hover:text-[var(--accent)]"
           >
             <ArrowUpRight className="size-4" />
           </a>
         )}
       </div>
+      <div className="mt-3 flex flex-wrap gap-1.5">
+        <Pill label={o.status} color={accent} />
+        <Pill label={o.opportunity_type} color={TYPE_COLORS[o.opportunity_type]} />
+        {o.fit !== 'Unknown' && (
+          <Pill label={`${o.fit} fit`} color={FIT_COLORS[o.fit]} />
+        )}
+      </div>
     </div>
   );
 }
 
-function Section({
+/** Compact row — used for the long tail, so it reads as secondary. */
+function CompactRow({ o }: { o: Opportunity }) {
+  return (
+    <div className="flex items-center gap-3 px-4 py-2.5">
+      <span
+        className="size-1.5 shrink-0 rounded-full"
+        style={{ background: STATUS_COLORS[o.status] }}
+        aria-hidden="true"
+      />
+      <div className="min-w-0 flex-1">
+        <div className="truncate text-[14px] font-medium">{o.organization}</div>
+        <div className="truncate text-[12.5px] text-[var(--label-3)]">{o.role}</div>
+      </div>
+      {o.fit !== 'Unknown' && (
+        <Pill label={o.fit} color={FIT_COLORS[o.fit]} dot={false} />
+      )}
+    </div>
+  );
+}
+
+function SectionHeader({
   title,
   count,
-  children,
+  href,
 }: {
   title: string;
   count?: number;
-  children: React.ReactNode;
+  href?: string;
 }) {
-  return (
-    <section className="mb-6">
-      <div className="mb-2 flex items-baseline gap-2 px-1">
-        <h2 className="text-[13px] font-semibold uppercase tracking-[0.04em] text-[var(--label-3)]">
-          {title}
-        </h2>
-        {count !== undefined && (
-          <span className="tnum text-[13px] text-[var(--label-3)]">{count}</span>
-        )}
-      </div>
-      <div className="overflow-hidden rounded-[var(--radius-apple-lg)] bg-[var(--surface)] shadow-[var(--shadow-sm)] [&>*+*]:border-t [&>*+*]:border-[var(--separator)]">
-        {children}
-      </div>
-    </section>
+  const inner = (
+    <>
+      <h2 className="text-[13px] font-semibold uppercase tracking-[0.04em] text-[var(--label-3)]">
+        {title}
+      </h2>
+      {count !== undefined && (
+        <span className="tnum text-[13px] text-[var(--label-3)]">{count}</span>
+      )}
+      {href && <ChevronRight className="ml-auto size-4 text-[var(--label-3)]" />}
+    </>
   );
-}
 
-function Empty({ text }: { text: string }) {
-  return (
-    <div className="flex flex-col items-center gap-2 px-4 py-10 text-center">
-      <Inbox className="size-6 text-[var(--label-3)]" strokeWidth={1.5} />
-      <p className="text-[13px] text-[var(--label-2)]">{text}</p>
-    </div>
+  return href ? (
+    <Link href={href} className="mb-2 flex items-center gap-2 px-1">
+      {inner}
+    </Link>
+  ) : (
+    <div className="mb-2 flex items-baseline gap-2 px-1">{inner}</div>
   );
 }
 
@@ -164,31 +121,17 @@ export default async function OverviewPage() {
   const interviewing = opportunities.filter(
     (o) => o.status === 'Interview in Progress'
   );
-  const inFlight = opportunities.filter((o) =>
-    IN_FLIGHT_STATUSES.includes(o.status)
+  const awaiting = opportunities.filter(
+    (o) => o.status === 'Waiting for Response'
   );
-  const open = opportunities.filter((o) => !CLOSED_STATUSES.includes(o.status));
+  const notApplied = opportunities.filter((o) => o.status === 'Not Applied Yet');
 
-  // Anything already surfaced above doesn't repeat here — the same card twice
-  // on one screen reads as a rendering bug, not as emphasis.
-  const alreadyShown = new Set([
-    ...active.map((o) => o.id),
-    ...interviewing.map((o) => o.id),
-  ]);
-
-  const upcoming = open
-    .filter((o) => {
-      if (alreadyShown.has(o.id)) return false;
-      const d = daysUntil(o.deadline);
-      return d !== null && d >= 0 && d <= 30;
-    })
-    .sort((a, b) => (a.deadline ?? '').localeCompare(b.deadline ?? ''));
+  const events = collectEvents(opportunities);
 
   const byType = OPPORTUNITY_TYPES.map((t) => ({
     type: t,
-    total: opportunities.filter((o) => o.opportunity_type === t).length,
-    live: open.filter((o) => o.opportunity_type === t).length,
-  })).filter((r) => r.total > 0);
+    count: opportunities.filter((o) => o.opportunity_type === t).length,
+  })).filter((r) => r.count > 0);
 
   return (
     <div className="mx-auto max-w-[1400px] px-4 pb-20 sm:px-6">
@@ -196,70 +139,109 @@ export default async function OverviewPage() {
 
       {(!configured || error) && <SetupBanner error={error} />}
 
-      <div className="mb-6 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-        <Stat n={active.length} label="Active" color="var(--green)" />
-        <Stat
-          n={interviewing.length}
-          label="Interviewing"
-          color="var(--purple)"
-        />
-        <Stat n={inFlight.length} label="In flight" color="var(--blue)" />
-        <Stat n={opportunities.length} label="Tracked" />
+      <Hero
+        name="Gimmy"
+        events={events}
+        activeCount={active.length}
+        awaitingCount={awaiting.length}
+      />
+
+      <StaleNudge rows={opportunities} />
+
+      <Pipeline rows={opportunities} />
+
+      {/* Live things get the prominent treatment; everything else is secondary. */}
+      {(active.length > 0 || interviewing.length > 0) && (
+        <section className="mb-6">
+          <SectionHeader title="Happening now" count={active.length + interviewing.length} />
+          <div className="grid gap-2.5 sm:grid-cols-2 [&>*]:min-w-0">
+            {[...active, ...interviewing].map((o) => (
+              <FeatureCard key={o.id} o={o} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* min-w-0 on the children is load-bearing: grid items default to
+          min-width:auto, so a long role name would refuse to shrink and push
+          the whole page into horizontal scroll instead of truncating. */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        <section className="min-w-0">
+          <SectionHeader
+            title="Awaiting a reply"
+            count={awaiting.length}
+            href="/opportunities"
+          />
+          <div className="overflow-hidden rounded-[var(--radius-apple-lg)] bg-[var(--surface)] shadow-[var(--shadow-sm)] [&>*+*]:border-t [&>*+*]:border-[var(--separator)]">
+            {awaiting.length ? (
+              awaiting.slice(0, 6).map((o) => <CompactRow key={o.id} o={o} />)
+            ) : (
+              <div className="flex flex-col items-center gap-2 px-4 py-8">
+                <Inbox className="size-5 text-[var(--label-3)]" strokeWidth={1.5} />
+                <p className="text-[13px] text-[var(--label-2)]">
+                  Nothing pending.
+                </p>
+              </div>
+            )}
+            {awaiting.length > 6 && (
+              <Link
+                href="/opportunities"
+                className="block px-4 py-2.5 text-[13px] font-medium text-[var(--accent)]"
+              >
+                {awaiting.length - 6} more
+              </Link>
+            )}
+          </div>
+        </section>
+
+        <section className="min-w-0">
+          <SectionHeader title="On the radar" count={notApplied.length} />
+          <div className="overflow-hidden rounded-[var(--radius-apple-lg)] bg-[var(--surface)] shadow-[var(--shadow-sm)] [&>*+*]:border-t [&>*+*]:border-[var(--separator)]">
+            {notApplied.length ? (
+              notApplied.slice(0, 6).map((o) => <CompactRow key={o.id} o={o} />)
+            ) : (
+              <div className="flex flex-col items-center gap-2 px-4 py-8">
+                <Inbox className="size-5 text-[var(--label-3)]" strokeWidth={1.5} />
+                <p className="text-[13px] text-[var(--label-2)]">
+                  Nothing queued up.
+                </p>
+              </div>
+            )}
+            {notApplied.length > 6 && (
+              <Link
+                href="/opportunities"
+                className="block px-4 py-2.5 text-[13px] font-medium text-[var(--accent)]"
+              >
+                {notApplied.length - 6} more
+              </Link>
+            )}
+          </div>
+        </section>
       </div>
 
-      <Section title="Active right now" count={active.length || undefined}>
-        {active.length ? (
-          active.map((o) => <Row key={o.id} o={o} />)
-        ) : (
-          <Empty text="Nothing accepted or active yet." />
-        )}
-      </Section>
-
-      {interviewing.length > 0 && (
-        <Section title="Interviewing" count={interviewing.length}>
-          {interviewing.map((o) => (
-            <Row key={o.id} o={o} showDeadline />
-          ))}
-        </Section>
-      )}
-
-      {upcoming.length > 0 && (
-        <Section title="Next 30 days" count={upcoming.length}>
-          {upcoming.map((o) => (
-            <Row key={o.id} o={o} showDeadline />
-          ))}
-        </Section>
-      )}
-
       {byType.length > 0 && (
-        <Section title="By type">
-          {byType.map((r) => (
-            <div key={r.type} className="flex items-center gap-3 px-4 py-3">
-              <Pill label={r.type} color={TYPE_COLORS[r.type]} />
-              <div className="flex-1" />
-              <span className="tnum text-[13px]">
-                <span className="font-semibold">{r.live}</span>
-                <span className="text-[var(--label-3)]"> live</span>
-              </span>
-              <span className="tnum w-16 text-right text-[13px] text-[var(--label-3)]">
-                {r.total} total
-              </span>
-            </div>
-          ))}
-        </Section>
-      )}
-
-      {opportunities.length > 0 && (
-        <Link
-          href="/opportunities"
-          className="flex items-center justify-center gap-1.5 rounded-[var(--radius-apple)] bg-[var(--surface)] px-4 py-3.5 text-[14px] font-medium text-[var(--accent)] shadow-[var(--shadow-sm)] transition-transform active:scale-[0.99]"
-        >
-          <CalendarClock className="size-4" />
-          See all {opportunities.length} opportunities
-        </Link>
+        <section className="mt-6">
+          <SectionHeader title="By type" />
+          <div className="flex flex-wrap gap-2">
+            {byType.map((r) => (
+              <div
+                key={r.type}
+                className="flex items-center gap-2 rounded-full bg-[var(--surface)] py-1.5 pl-2.5 pr-3.5 shadow-[var(--shadow-sm)]"
+              >
+                <span
+                  className="size-2 rounded-full"
+                  style={{ background: TYPE_COLORS[r.type] }}
+                  aria-hidden="true"
+                />
+                <span className="text-[13px] font-medium">{r.type}</span>
+                <span className="tnum text-[13px] text-[var(--label-3)]">
+                  {r.count}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
       )}
     </div>
   );
 }
-
-export { friendlyDate };

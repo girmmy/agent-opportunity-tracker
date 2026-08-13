@@ -194,6 +194,25 @@ Fill in **Profile** first (the nav's settings tab). Fit analysis is judged again
 a rating against an empty profile is meaningless — the endpoint returns 428 rather than
 inventing something.
 
+**Upload your résumé** — the fastest way to fill it. Drop a PDF, DOCX, or text file on the
+Profile page and the sections below populate themselves: name, current situation, skills,
+experience, projects, education, and any eligibility the résumé states outright.
+
+Text extraction is local (`unpdf` for PDF, `mammoth` for DOCX); only the extracted text
+goes to the model, never the file. Nothing is written on upload — the result lands in the
+form as a draft you read and edit before saving. If the profile already has content you
+get two choices, and *fill what's empty* is the default, because an import that silently
+overwrites something you wrote by hand is the one mistake here you can't undo from the UI.
+
+Sections the résumé doesn't cover come back null and are shown as **not found** rather
+than filled with something plausible. Eligibility is usually one of them — most résumés
+say nothing about work authorization, and a guess there is the kind that follows you onto
+a legal form.
+
+Scanned or photographed PDFs have no selectable text; those are rejected with an
+explanation instead of producing a mysteriously empty profile. `.doc` and `.pages` are
+refused with the specific fix (export as PDF). Cap is 4MB, under Vercel's request limit.
+
 **Fill the blanks** — paste a posting, get organization / role / type / cycle / deadline /
 listing URL extracted into the form. Every field is nullable and only *empty* fields are
 filled, so it never overwrites something you typed. The prompt is told to return null

@@ -4,19 +4,23 @@ import * as React from 'react';
 import { useRouter } from 'next/navigation';
 import { Check, LoaderCircle, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Textarea, Label } from '@/components/ui/input';
-import type { Profile } from '@/lib/profile';
+import { Input, Textarea, Label } from '@/components/ui/input';
+import { ResumeUpload } from '@/components/ResumeUpload';
+import { PROFILE_FIELDS, type Profile } from '@/lib/profile';
 
 const SECTIONS: {
   key: keyof Profile;
   label: string;
   placeholder: string;
+  /** Rendered as a single-line input rather than a textarea. */
+  single?: boolean;
   rows?: number;
 }[] = [
   {
     key: 'full_name',
     label: 'Your name',
-    placeholder: 'Used for tailored résumé filenames.',
+    placeholder: 'Girmachew Samson',
+    single: true,
   },
   {
     key: 'headline',
@@ -71,6 +75,33 @@ export function ProfileForm({
   const [saving, setSaving] = React.useState(false);
   const [saved, setSaved] = React.useState(false);
   const [error, setError] = React.useState('');
+
+  const hasContent = PROFILE_FIELDS.some((k) => {
+    const v = profile[k];
+    return typeof v === 'string' && v.trim() !== '';
+  });
+
+  /**
+   * "fill" is the default because an import that quietly overwrites text you
+   * wrote yourself is the one mistake here you can't undo from the UI.
+   */
+  function applyImport(
+    fields: Partial<Record<keyof Profile, string | null>>,
+    mode: 'fill' | 'replace'
+  ) {
+    setProfile((current) => {
+      const next = { ...current };
+      for (const key of PROFILE_FIELDS) {
+        const incoming = fields[key];
+        if (typeof incoming !== 'string' || incoming.trim() === '') continue;
+        const existing = current[key];
+        const empty = typeof existing !== 'string' || existing.trim() === '';
+        if (mode === 'replace' || empty) next[key] = incoming;
+      }
+      return next;
+    });
+    setSaved(false);
+  }
 
   async function save() {
     setSaving(true);
@@ -134,19 +165,32 @@ export function ProfileForm({
         </div>
       )}
 
+      <ResumeUpload hasContent={hasContent} onApply={applyImport} />
+
       <div className="flex flex-col gap-5">
         {SECTIONS.map((s) => (
           <div key={s.key} className="flex flex-col gap-1.5">
             <Label htmlFor={`p-${s.key}`}>{s.label}</Label>
-            <Textarea
-              id={`p-${s.key}`}
-              rows={s.rows ?? 2}
-              placeholder={s.placeholder}
-              value={(profile[s.key] as string | null) ?? ''}
-              onChange={(e) =>
-                setProfile({ ...profile, [s.key]: e.target.value })
-              }
-            />
+            {s.single ? (
+              <Input
+                id={`p-${s.key}`}
+                placeholder={s.placeholder}
+                value={(profile[s.key] as string | null) ?? ''}
+                onChange={(e) =>
+                  setProfile({ ...profile, [s.key]: e.target.value })
+                }
+              />
+            ) : (
+              <Textarea
+                id={`p-${s.key}`}
+                rows={s.rows ?? 2}
+                placeholder={s.placeholder}
+                value={(profile[s.key] as string | null) ?? ''}
+                onChange={(e) =>
+                  setProfile({ ...profile, [s.key]: e.target.value })
+                }
+              />
+            )}
           </div>
         ))}
       </div>
@@ -157,7 +201,7 @@ export function ProfileForm({
         </p>
       )}
 
-      <div className="sticky bottom-4 mt-6 flex items-center gap-3">
+      <div className="sticky bottom-0 -mx-4 mt-6 flex items-center gap-3 border-t border-[var(--separator)] bg-[var(--bg)] px-4 py-3.5">
         <Button variant="primary" size="lg" onClick={save} disabled={saving}>
           {saving ? (
             <>

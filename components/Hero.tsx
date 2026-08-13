@@ -56,7 +56,7 @@ export function Hero({
   const next = upcoming[0];
 
   if (!now) {
-    return <div className="mb-8 h-[188px] sm:h-[206px]" aria-hidden="true" />;
+    return <div className="mb-8 h-[204px] sm:h-[232px]" aria-hidden="true" />;
   }
 
   const summary = () => {
@@ -98,7 +98,7 @@ export function Hero({
             greeting, roman on the name — the shift is what makes it feel
             addressed to a person rather than printed by a system. */}
         <h2
-          className="rise serif mt-1.5 text-[38px] leading-[1.05] sm:text-[46px]"
+          className="rise serif mt-2 text-[46px] leading-[1.02] tracking-[-0.02em] sm:text-[62px]"
           style={{ '--d': '70ms' } as React.CSSProperties}
         >
           <span className="italic text-[var(--label-2)]">
@@ -109,7 +109,7 @@ export function Hero({
         </h2>
 
         <p
-          className="rise mt-2.5 max-w-[52ch] text-[15px] text-[var(--label-2)]"
+          className="rise mt-3 max-w-[52ch] text-[15.5px] text-[var(--label-2)]"
           style={{ '--d': '140ms' } as React.CSSProperties}
         >
           {summary()}

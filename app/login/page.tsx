@@ -143,7 +143,7 @@ function LoginForm() {
       {/* Source link, for the people who'd want it. Corner-anchored so it never
           competes with the sign-in card or the credit line. */}
       <a
-        href="https://github.com/girmmy/opportunity-tracker"
+        href="https://github.com/girmmy/agent-opportunity-tracker"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="View the source on GitHub"

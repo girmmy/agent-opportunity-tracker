@@ -5,7 +5,7 @@ description: Read and update the user's Opportunity Tracker — the job/internsh
 
 # Opportunity Tracker
 
-A deployment of [opportunity-tracker](https://github.com/girmmy/opportunity-tracker) that
+A deployment of [opportunity-tracker](https://github.com/girmmy/agent-opportunity-tracker) that
 holds the user's applications and their background. This skill is how you read and write it.
 
 It contains no personal data. Everything about the user comes from their deployment at

@@ -41,7 +41,7 @@ you to set; you'll want it for step 3.
 ### 2. Set your password
 
 ```bash
-git clone https://github.com/girmmy/opportunity-tracker.git
+git clone https://github.com/girmmy/agent-opportunity-tracker.git
 cd opportunity-tracker
 npm install
 npm run hash-password

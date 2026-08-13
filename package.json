@@ -10,8 +10,10 @@
     "hash-password": "node scripts/hash-password.mjs",
     "migrate": "node scripts/migrate.mjs",
     "seed": "node scripts/seed.mjs",
-    "setup": "node scripts/migrate.mjs && node scripts/seed.mjs",
-    "export": "node scripts/export.mjs"
+    "setup": "node scripts/setup.mjs",
+    "export": "node scripts/export.mjs",
+    "doctor": "node scripts/doctor.mjs",
+    "db:reset": "node scripts/migrate.mjs && node scripts/seed.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.116.0",

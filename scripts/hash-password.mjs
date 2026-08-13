@@ -10,8 +10,8 @@
  * can't be reversed back into the password.
  */
 
-import readline from 'node:readline';
 import { webcrypto as crypto } from 'node:crypto';
+import { askHidden as promptHidden } from './lib/prompt.mjs';
 
 const PBKDF2_ITERATIONS = 210_000;
 const enc = new TextEncoder();
@@ -34,33 +34,6 @@ async function pbkdf2(password, salt, iterations) {
     256
   );
   return new Uint8Array(bits);
-}
-
-function promptHidden(question) {
-  return new Promise((resolve) => {
-    const rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout,
-      terminal: true,
-    });
-
-    // Suppress echo so the password isn't visible on screen.
-    const onData = (char) => {
-      const s = char.toString();
-      if (s === '\n' || s === '\r' || s === '') {
-        process.stdin.removeListener('data', onData);
-      } else {
-        process.stdout.write('\x1b[2K\x1b[200D' + question + '*'.repeat(rl.line.length));
-      }
-    };
-    process.stdin.on('data', onData);
-
-    rl.question(question, (answer) => {
-      rl.close();
-      process.stdout.write('\n');
-      resolve(answer);
-    });
-  });
 }
 
 const password = await promptHidden('Choose a password: ');

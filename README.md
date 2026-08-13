@@ -37,79 +37,77 @@ Radix primitives · Vercel
 
 ## Deploy your own
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fgirmmy%2Fagent-opportunity-tracker&env=APP_PASSWORD_HASH,AUTH_SECRET,NEXT_PUBLIC_SUPABASE_URL,SUPABASE_SECRET_KEY&envDescription=Generate%20the%20auth%20values%20with%20npm%20run%20hash-password%2C%20and%20get%20the%20Supabase%20ones%20from%20Settings%20-%3E%20API%20Keys&envLink=https%3A%2F%2Fgithub.com%2Fgirmmy%2Fagent-opportunity-tracker%23deploy-your-own&project-name=agent-opportunity-tracker&repository-name=agent-opportunity-tracker)
-
-The button clones the repo and asks for the four required env vars. You'll need a Supabase
-project first — steps below. Free tiers on both Supabase and Vercel are plenty for this.
+Two commands and a wizard. Free tiers on Supabase and Vercel are plenty.
 
 ### 1. Create a Supabase project
 
 [supabase.com](https://supabase.com) → **New project**. Note the database password it asks
-you to set; you'll want it for step 3.
+you to set — the wizard can use it to create your tables automatically.
 
-### 2. Set your password
+### 2. Clone and run setup
 
 ```bash
 git clone https://github.com/girmmy/agent-opportunity-tracker.git
 cd agent-opportunity-tracker
 npm install
-npm run hash-password
+npm run setup
 ```
 
-It prompts twice with hidden input, then prints three values. The password itself is never
-stored, logged, or sent anywhere — only its hash, which can't be reversed.
+That's the whole thing. The wizard:
 
-```bash
-cp .env.example .env.local
-```
+- **Generates your secrets and writes them itself** — password hash, session secret, agent
+  token. Nothing is printed for you to copy across, because that copy was where setups
+  broke: a truncated hash, or a `$` that env loaders expand, both surface later as *"my
+  correct password is rejected"* with nothing pointing at the cause.
+- **Checks Supabase before writing anything down.** It catches the publishable key being
+  used instead of the secret one — those sit next to each other in the dashboard, and the
+  wrong one doesn't error, it just reads zero rows forever because RLS is on with no
+  policies. It also trims the `/rest/v1/` off the Data API URL, which otherwise fails as
+  *"Invalid path specified in request URL"*.
+- **Creates your tables**, either directly with your connection string or by writing a
+  single `supabase/all-migrations.sql` for you to paste into the SQL editor once.
+- **Is safe to re-run.** It shows what's already set and leaves it alone unless you say
+  otherwise.
 
-Fill in what it printed, plus your Supabase **Project URL** and **Secret key** (Settings →
-API Keys → the `sb_secret_…` one).
-
-### 3. Create the tables
-
-Either paste each file in `supabase/migrations/` into the Supabase SQL editor in order, or
-add `DATABASE_URL` to `.env.local` (Supabase → **Connect** → Direct connection) and run:
-
-```bash
-npm run migrate
-```
-
-Both are idempotent — safe to run twice. `migrate` prints the resulting columns and
-confirms row-level security is on.
-
-Optionally load a few sample rows so the UI isn't empty:
-
-```bash
-npm run seed
-```
-
-### 4. Run it
+Then:
 
 ```bash
 npm run dev
 ```
 
-### 5. Deploy
+### 3. Deploy
 
-Push to your own GitHub repo and import it in Vercel, or use the button above. Add these
-under **Project Settings → Environment Variables**:
+Import the repo in Vercel and copy four values from your `.env.local`:
 
-| Variable | Required |
+| Variable | |
 |---|---|
-| `APP_PASSWORD_HASH` | Yes |
-| `AUTH_SECRET` | Yes |
-| `NEXT_PUBLIC_SUPABASE_URL` | Yes |
-| `SUPABASE_SECRET_KEY` | Yes |
-| `OWNER_NAME` | Optional — greets you by name |
-| `AGENT_API_TOKEN` | Optional — only for the automation endpoint |
-| `ANTHROPIC_API_KEY` *or* `OPENAI_API_KEY` | Optional — either one turns on the AI features. Billed to your own account. |
-| `AI_PROVIDER` | Optional — only if you set both keys and want to pin one |
-| `CLAUDE_MODEL` / `OPENAI_MODEL` | Optional — model used for fit analysis |
-| `CLAUDE_MODEL_FAST` / `OPENAI_MODEL_FAST` | Optional — cheaper model used for extraction |
-| `DATABASE_URL` | **No.** Migrations run from your machine. A superuser connection string in the deployment environment is exposure for no benefit. |
+| `NEXT_PUBLIC_SUPABASE_URL` | required |
+| `SUPABASE_SECRET_KEY` | required |
+| `APP_PASSWORD_HASH` | required |
+| `AUTH_SECRET` | required |
+| `OWNER_NAME` | optional — greets you by name |
+| `AGENT_API_TOKEN` | optional — for the agent API and skill |
+| `ANTHROPIC_API_KEY` *or* `OPENAI_API_KEY` | optional — turns on the AI features, billed to your own account |
+| `AI_PROVIDER` | optional — only if you set both keys and want to pin one |
+| `CLAUDE_MODEL` / `OPENAI_MODEL` | optional — model for fit analysis and tailoring |
+| `CLAUDE_MODEL_FAST` / `OPENAI_MODEL_FAST` | optional — cheaper model for extraction |
 
----
+**Don't add `DATABASE_URL`.** Migrations run from your machine; a superuser connection
+string sitting in the deployment environment is exposure for no benefit.
+
+> There's no one-click deploy button, deliberately. It would ask for `APP_PASSWORD_HASH`
+> before you have any way to generate one — you'd have to clone and run a script first
+> anyway, so the button just hides a step rather than removing it.
+
+### If something's wrong
+
+```bash
+npm run doctor
+```
+
+Read-only. It checks each value and, where something's off, names the symptom you'd
+otherwise be debugging blind — the `$`-in-hash problem, the publishable-vs-secret key, a
+URL with a path on it, tables that were never created, a paused project.
 
 ## How the login works
 
@@ -484,12 +482,15 @@ for genuinely unattended runs you'd want a server-side cron hitting an endpoint.
 
 | Command | What it does |
 |---|---|
+| `npm run setup` | **Start here.** Interactive: generates secrets, verifies Supabase, creates tables, writes `.env.local`. Safe to re-run. |
+| `npm run doctor` | Check an existing setup and explain anything wrong. Read-only. |
 | `npm run dev` | Local dev server |
 | `npm run build` | Production build |
-| `npm run hash-password` | Generate `APP_PASSWORD_HASH`, `AUTH_SECRET`, `AGENT_API_TOKEN` |
+| `npm run export` | Snapshot the database to `backups/` and refresh `data/seed.json` |
+| `npm run hash-password` | Reset just the password, without the full wizard |
 | `npm run migrate` | Apply `supabase/migrations/*.sql` (needs `DATABASE_URL`) |
 | `npm run seed` | Load `data/seed.json`, or the sample data if that's absent |
-| `npm run setup` | `migrate` then `seed` |
+| `npm run db:reset` | `migrate` then `seed` |
 | `npm run typecheck` | `tsc --noEmit` |
 
 ## Notes

@@ -74,6 +74,11 @@ Write it for a competent stranger, because that's effectively what starts each s
 A recurring task that sweeps email and updates the tracker. Ours runs daily and writes a
 digest as a draft email.
 
+**The README has the full prompt** — copy-pasteable, with three placeholders to fill in.
+It's the real one, generalized. Start there rather than writing your own; most of its
+length is the email-search section, and that exists because the short version misses
+things.
+
 Two things worth building in:
 
 - **Skip the digest on quiet days.** A daily email that's usually empty trains you to

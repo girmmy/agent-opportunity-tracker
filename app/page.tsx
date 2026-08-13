@@ -1,3 +1,4 @@
+import * as React from 'react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { ArrowUpRight, ChevronRight, Inbox } from 'lucide-react';
@@ -31,9 +32,7 @@ function FeatureCard({ o }: { o: Opportunity }) {
     >
       <div className="flex items-start gap-3">
         <div className="min-w-0 flex-1">
-          <div className="text-[17px] font-semibold leading-snug tracking-[-0.019em]">
-            {o.role}
-          </div>
+          <div className="serif text-[21px] leading-[1.15]">{o.role}</div>
           <div className="mt-0.5 text-[14px] text-[var(--label-2)]">
             {o.organization}
             {o.cycle ? ` · ${o.cycle}` : ''}
@@ -93,7 +92,7 @@ function SectionHeader({
 }) {
   const inner = (
     <>
-      <h2 className="text-[13px] font-semibold uppercase tracking-[0.04em] text-[var(--label-3)]">
+      <h2 className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-[var(--label-3)]">
         {title}
       </h2>
       {count !== undefined && (
@@ -146,13 +145,17 @@ export default async function OverviewPage() {
         awaitingCount={awaiting.length}
       />
 
-      <StaleNudge rows={opportunities} />
+      <div className="rise" style={{ '--d': '420ms' } as React.CSSProperties}>
+        <StaleNudge rows={opportunities} />
+      </div>
 
-      <Pipeline rows={opportunities} />
+      <div className="rise" style={{ '--d': '480ms' } as React.CSSProperties}>
+        <Pipeline rows={opportunities} />
+      </div>
 
       {/* Live things get the prominent treatment; everything else is secondary. */}
       {(active.length > 0 || interviewing.length > 0) && (
-        <section className="mb-6">
+        <section className="rise mb-6" style={{ '--d': '540ms' } as React.CSSProperties}>
           <SectionHeader title="Happening now" count={active.length + interviewing.length} />
           <div className="grid gap-2.5 sm:grid-cols-2 [&>*]:min-w-0">
             {[...active, ...interviewing].map((o) => (
@@ -165,7 +168,7 @@ export default async function OverviewPage() {
       {/* min-w-0 on the children is load-bearing: grid items default to
           min-width:auto, so a long role name would refuse to shrink and push
           the whole page into horizontal scroll instead of truncating. */}
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="rise grid gap-6 lg:grid-cols-2" style={{ '--d': '600ms' } as React.CSSProperties}>
         <section className="min-w-0">
           <SectionHeader
             title="Awaiting a reply"

@@ -2,8 +2,12 @@
 
 import * as React from 'react';
 import { CalendarDays, Sparkles } from 'lucide-react';
-import { countdownLabel, daysUntil, formatDate, type UpcomingEvent } from '@/lib/dates';
-import { cn } from '@/lib/utils';
+import {
+  countdownLabel,
+  daysUntil,
+  formatDate,
+  type UpcomingEvent,
+} from '@/lib/dates';
 
 const KIND_COLOR: Record<UpcomingEvent['kind'], string> = {
   Interview: 'var(--purple)',
@@ -20,11 +24,9 @@ function greeting(hour: number): string {
 
 /**
  * Client component on purpose. The greeting and every countdown compare against
- * "now", and on Vercel the server clock is UTC — a server-rendered version would
- * say "Good morning" at 8pm in Atlanta and be a day off on deadlines.
- *
- * Rendering is deferred to after mount so the server and client markup match;
- * otherwise React hydration warns about the text differing.
+ * "now", and on Vercel the server clock is UTC — a server-rendered version
+ * would say "Good morning" at 8pm in Atlanta and be a day off on deadlines.
+ * Rendering waits for mount so server and client markup can't disagree.
  */
 export function Hero({
   name,
@@ -52,9 +54,8 @@ export function Hero({
 
   const next = upcoming[0];
 
-  // Reserve the same vertical space pre-hydration so the page doesn't jump.
   if (!now) {
-    return <div className="mb-6 h-[132px] sm:h-[124px]" aria-hidden="true" />;
+    return <div className="mb-8 h-[188px] sm:h-[206px]" aria-hidden="true" />;
   }
 
   const summary = () => {
@@ -65,7 +66,11 @@ export function Hero({
           : next.days === 1
             ? 'tomorrow'
             : `in ${next.days} days`;
-      return `${next.kind === 'Starts' ? `${next.organization} starts` : `${next.organization} ${next.kind.toLowerCase()}`} ${when}.`;
+      const what =
+        next.kind === 'Starts'
+          ? `${next.organization} starts`
+          : `${next.organization} ${next.kind.toLowerCase()}`;
+      return `${what} ${when}.`;
     }
     if (activeCount > 0 && awaitingCount > 0) {
       return `${activeCount} active, ${awaitingCount} awaiting a reply.`;
@@ -75,41 +80,61 @@ export function Hero({
   };
 
   return (
-    <section className="mb-6">
-      <div className="mb-4">
-        <p className="text-[13px] font-medium text-[var(--label-3)]">
+    <section className="mb-8">
+      <div className="mb-5">
+        <p
+          className="rise text-[10.5px] font-semibold uppercase tracking-[0.16em] text-[var(--label-3)]"
+          style={{ '--d': '0ms' } as React.CSSProperties}
+        >
           {now.toLocaleDateString(undefined, {
             weekday: 'long',
             month: 'long',
             day: 'numeric',
           })}
         </p>
-        <h2 className="mt-0.5 text-[28px] font-semibold leading-tight tracking-[-0.026em] sm:text-[32px]">
-          {greeting(now.getHours())}, {name}
+
+        {/* The one place the display face earns its keep. Italic on the
+            greeting, roman on the name — the shift is what makes it feel
+            addressed to a person rather than printed by a system. */}
+        <h2
+          className="rise serif mt-1.5 text-[38px] leading-[1.05] sm:text-[46px]"
+          style={{ '--d': '70ms' } as React.CSSProperties}
+        >
+          <span className="italic text-[var(--label-2)]">{greeting(now.getHours())},</span>{' '}
+          <span className="text-[var(--label)]">{name}</span>
         </h2>
-        <p className="mt-1 text-[15px] text-[var(--label-2)]">{summary()}</p>
+
+        <p
+          className="rise mt-2.5 max-w-[52ch] text-[15px] text-[var(--label-2)]"
+          style={{ '--d': '140ms' } as React.CSSProperties}
+        >
+          {summary()}
+        </p>
       </div>
 
       {upcoming.length > 0 && (
-        <div className="flex gap-2.5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {upcoming.map((e) => {
+        <div className="-mx-4 flex gap-2.5 overflow-x-auto px-4 pb-1 sm:mx-0 sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {upcoming.map((e, i) => {
             const color = KIND_COLOR[e.kind];
             const urgent = e.days <= 2;
             return (
               <div
                 key={`${e.id}-${e.kind}`}
-                className={cn(
-                  'flex min-w-[190px] flex-1 items-center gap-3 rounded-[var(--radius-apple-lg)] p-3.5 shadow-[var(--shadow-sm)]'
-                )}
-                style={{
-                  background: urgent
-                    ? `color-mix(in srgb, ${color} 12%, var(--surface))`
-                    : 'var(--surface)',
-                }}
+                className="rise flex min-w-[200px] flex-1 items-center gap-3 rounded-[var(--radius-apple-lg)] p-3.5 shadow-[var(--shadow-sm)]"
+                style={
+                  {
+                    '--d': `${200 + i * 70}ms`,
+                    background: urgent
+                      ? `color-mix(in srgb, ${color} 11%, var(--surface))`
+                      : 'var(--surface)',
+                  } as React.CSSProperties
+                }
               >
                 <div
                   className="grid size-10 shrink-0 place-items-center rounded-full"
-                  style={{ background: `color-mix(in srgb, ${color} 16%, transparent)` }}
+                  style={{
+                    background: `color-mix(in srgb, ${color} 15%, transparent)`,
+                  }}
                 >
                   {e.kind === 'Starts' ? (
                     <Sparkles className="size-4" style={{ color }} strokeWidth={2.2} />
@@ -121,7 +146,7 @@ export function Hero({
                 <div className="min-w-0 flex-1">
                   <div className="flex items-baseline gap-1.5">
                     <span
-                      className="whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.04em]"
+                      className="whitespace-nowrap text-[10px] font-bold uppercase tracking-[0.1em]"
                       style={{ color }}
                     >
                       {e.kind}
@@ -130,13 +155,15 @@ export function Hero({
                       {formatDate(e.date)}
                     </span>
                   </div>
-                  <div className="truncate text-[14px] font-medium">
+                  <div className="truncate text-[14.5px] font-semibold tracking-[-0.01em]">
                     {e.organization}
                   </div>
                 </div>
 
+                {/* Countdown in the display face — it's the number that
+                    actually matters on this screen. */}
                 <div
-                  className="tnum shrink-0 text-[15px] font-semibold"
+                  className="serif tnum shrink-0 text-[22px] leading-none"
                   style={{ color: urgent ? color : 'var(--label-2)' }}
                 >
                   {countdownLabel(e.days)}

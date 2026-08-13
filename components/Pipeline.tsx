@@ -54,11 +54,11 @@ export function Pipeline({ rows }: { rows: Opportunity[] }) {
     <section className="mb-6">
       <div className="rounded-[var(--radius-apple-lg)] bg-[var(--surface)] p-4 shadow-[var(--shadow-sm)]">
         <div className="mb-3 flex items-baseline justify-between">
-          <h2 className="text-[13px] font-semibold uppercase tracking-[0.04em] text-[var(--label-3)]">
+          <h2 className="text-[10.5px] font-bold uppercase tracking-[0.16em] text-[var(--label-3)]">
             Pipeline
           </h2>
-          <span className="tnum text-[13px] text-[var(--label-3)]">
-            {total} total
+          <span className="serif tnum text-[17px] text-[var(--label-2)]">
+            {total}
           </span>
         </div>
 

@@ -39,7 +39,7 @@ export function TopBar() {
           <span className="grid size-9 place-items-center rounded-[10px] bg-[var(--accent)] shadow-[var(--shadow-sm)]">
             <Target className="size-[18px] text-white" strokeWidth={2.4} />
           </span>
-          <span className="hidden text-[16px] font-semibold tracking-[-0.019em] sm:inline">
+          <span className="serif hidden text-[19px] leading-none sm:inline">
             Opportunity Tracker
           </span>
         </Link>

@@ -59,10 +59,10 @@ function LoginForm() {
           <div className="mb-3.5 grid size-12 place-items-center rounded-[14px] bg-[var(--accent)] shadow-[var(--shadow-md)]">
             <Lock className="size-5 text-white" strokeWidth={2.5} />
           </div>
-          <h1 className="text-[20px] font-semibold tracking-[-0.022em]">
+          <h1 className="serif text-[27px] leading-tight">
             Opportunity Tracker
           </h1>
-          <p className="mt-1 text-[13px] text-[var(--label-2)]">
+          <p className="mt-1.5 text-[13px] text-[var(--label-2)]">
             Enter your password to continue
           </p>
         </div>

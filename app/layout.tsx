@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { display, ui } from '@/lib/fonts';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -13,8 +14,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: 'cover',
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#f2f2f7' },
-    { media: '(prefers-color-scheme: dark)', color: '#000000' },
+    { media: '(prefers-color-scheme: light)', color: '#f4f2ee' },
+    { media: '(prefers-color-scheme: dark)', color: '#0b0d13' },
   ],
 };
 
@@ -24,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${display.variable} ${ui.variable}`}>
       <body>{children}</body>
     </html>
   );

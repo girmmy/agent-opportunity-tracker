@@ -1,13 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod';
 import { requireSession } from '@/lib/guard';
-import {
-  CLAUDE_MODEL,
-  claude,
-  describeClaudeError,
-  isClaudeConfigured,
-} from '@/lib/claude';
+import { describeAiError, isAiConfigured, structured } from '@/lib/ai';
 import { loadProfile, profileIsUsable, profileToPrompt } from '@/lib/profile';
 
 export const runtime = 'nodejs';
@@ -70,9 +64,12 @@ export async function POST(request: Request) {
   const denied = await requireSession();
   if (denied) return denied;
 
-  if (!isClaudeConfigured()) {
+  if (!isAiConfigured()) {
     return NextResponse.json(
-      { error: 'AI features are off. Set ANTHROPIC_API_KEY to enable them.' },
+      {
+        error:
+          'AI features are off. Set ANTHROPIC_API_KEY or OPENAI_API_KEY to enable them.',
+      },
       { status: 501 }
     );
   }
@@ -109,34 +106,25 @@ export async function POST(request: Request) {
   }
 
   try {
-    const response = await claude().messages.parse({
-      model: CLAUDE_MODEL,
-      max_tokens: 4096,
-      thinking: { type: 'adaptive' },
+    const result = await structured({
+      task: 'fit',
+      schema: FitSchema,
+      schemaName: 'fit_analysis',
       system: SYSTEM,
-      messages: [
-        {
-          role: 'user',
-          content: `# Candidate profile\n\n${profileToPrompt(profile)}\n\n# The posting\n\n${
-            organization || role
-              ? `Known so far: ${[organization, role].filter(Boolean).join(' — ')}\n\n`
-              : ''
-          }${posting}`,
-        },
-      ],
-      output_config: { format: zodOutputFormat(FitSchema) },
+      user: `# Candidate profile\n\n${profileToPrompt(profile)}\n\n# The posting\n\n${
+        organization || role
+          ? `Known so far: ${[organization, role].filter(Boolean).join(' — ')}\n\n`
+          : ''
+      }${posting}`,
     });
 
     return NextResponse.json({
-      analysis: response.parsed_output,
-      model: CLAUDE_MODEL,
-      usage: {
-        input_tokens: response.usage?.input_tokens,
-        output_tokens: response.usage?.output_tokens,
-      },
+      analysis: result.data,
+      provider: result.provider,
+      model: result.model,
     });
   } catch (err) {
-    const { message, status } = describeClaudeError(err);
+    const { message, status } = describeAiError(err);
     return NextResponse.json({ error: message }, { status });
   }
 }

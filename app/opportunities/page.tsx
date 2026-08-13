@@ -4,7 +4,7 @@ import { hasSession } from '@/lib/guard';
 import { TopBar } from '@/components/TopBar';
 import { SetupBanner } from '@/components/SetupBanner';
 import { OpportunitiesView } from '@/components/OpportunitiesView';
-import { isClaudeConfigured } from '@/lib/claude';
+import { isAiConfigured } from '@/lib/ai';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,7 +17,7 @@ export default async function OpportunitiesPage() {
     <div className="mx-auto max-w-[1400px] px-4 pb-20 sm:px-6">
       <TopBar />
       {(!configured || error) && <SetupBanner error={error} />}
-      <OpportunitiesView initial={opportunities} aiEnabled={isClaudeConfigured()} />
+      <OpportunitiesView initial={opportunities} aiEnabled={isAiConfigured()} />
     </div>
   );
 }

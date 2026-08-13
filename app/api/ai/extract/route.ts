@@ -1,13 +1,7 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { zodOutputFormat } from '@anthropic-ai/sdk/helpers/zod';
 import { requireSession } from '@/lib/guard';
-import {
-  CLAUDE_MODEL,
-  claude,
-  describeClaudeError,
-  isClaudeConfigured,
-} from '@/lib/claude';
+import { describeAiError, isAiConfigured, structured } from '@/lib/ai';
 import { CATEGORIES, OPPORTUNITY_TYPES } from '@/lib/types';
 
 export const runtime = 'nodejs';
@@ -66,9 +60,12 @@ export async function POST(request: Request) {
   const denied = await requireSession();
   if (denied) return denied;
 
-  if (!isClaudeConfigured()) {
+  if (!isAiConfigured()) {
     return NextResponse.json(
-      { error: 'AI features are off. Set ANTHROPIC_API_KEY to enable them.' },
+      {
+        error:
+          'AI features are off. Set ANTHROPIC_API_KEY or OPENAI_API_KEY to enable them.',
+      },
       { status: 501 }
     );
   }
@@ -89,20 +86,22 @@ export async function POST(request: Request) {
   }
 
   try {
-    const response = await claude().messages.parse({
-      model: CLAUDE_MODEL,
-      max_tokens: 2048,
+    const result = await structured({
+      task: 'extract',
+      schema: ExtractSchema,
+      schemaName: 'posting_fields',
       system: SYSTEM,
-      messages: [{ role: 'user', content: posting }],
-      output_config: { format: zodOutputFormat(ExtractSchema) },
+      user: posting,
+      maxTokens: 2048,
     });
 
     return NextResponse.json({
-      fields: response.parsed_output,
-      model: CLAUDE_MODEL,
+      fields: result.data,
+      provider: result.provider,
+      model: result.model,
     });
   } catch (err) {
-    const { message, status } = describeClaudeError(err);
+    const { message, status } = describeAiError(err);
     return NextResponse.json({ error: message }, { status });
   }
 }

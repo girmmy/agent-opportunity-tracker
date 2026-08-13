@@ -94,8 +94,10 @@ under **Project Settings → Environment Variables**:
 | `SUPABASE_SECRET_KEY` | Yes |
 | `OWNER_NAME` | Optional — greets you by name |
 | `AGENT_API_TOKEN` | Optional — only for the automation endpoint |
-| `ANTHROPIC_API_KEY` | Optional — turns on the AI features. Billed to your own account. |
-| `CLAUDE_MODEL` | Optional — defaults to `claude-opus-4-6` |
+| `ANTHROPIC_API_KEY` *or* `OPENAI_API_KEY` | Optional — either one turns on the AI features. Billed to your own account. |
+| `AI_PROVIDER` | Optional — only if you set both keys and want to pin one |
+| `CLAUDE_MODEL` / `OPENAI_MODEL` | Optional — model used for fit analysis |
+| `CLAUDE_MODEL_FAST` / `OPENAI_MODEL_FAST` | Optional — cheaper model used for extraction |
 | `DATABASE_URL` | **No.** Migrations run from your machine. A superuser connection string in the deployment environment is exposure for no benefit. |
 
 ---
@@ -142,8 +144,21 @@ Being honest about what this isn't:
 
 ## The AI features
 
-Both are optional. With no `ANTHROPIC_API_KEY` the app behaves exactly as it did before
-and the controls don't render — the template shouldn't force an API bill on anyone.
+Both are optional, and work with **either Anthropic or OpenAI** — set whichever key you
+already have. With neither, the app behaves exactly as it did before and the controls
+don't render; the template shouldn't force an API bill, or a second vendor account, on
+anyone.
+
+Two model tiers, because the tasks are different work. Extraction is mechanical — pulling
+stated fields out of text — so it uses a small, cheap model. Fit analysis is a judgement
+call that has to be willing to say "Weak", which is where model quality actually shows, so
+it gets the better tier. Both are env-overridable: the cost/quality tradeoff belongs to
+whoever is paying.
+
+| | Fit analysis | Extraction |
+|---|---|---|
+| Anthropic | `claude-sonnet-4-6` | `claude-haiku-4-5` |
+| OpenAI | `gpt-4o` | `gpt-4o-mini` |
 
 Fill in **Profile** first (the nav's settings tab). Fit analysis is judged against it, and
 a rating against an empty profile is meaningless — the endpoint returns 428 rather than

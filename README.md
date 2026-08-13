@@ -1,8 +1,9 @@
 # Agent Opportunity Tracker
 
 An open-source, self-hosted tracker for internships, jobs, programs, research, and
-scholarships — that also ships as a Claude/Codex skill, so your agent can connect to it,
-keep it current from your inbox, and tailor your résumé for a posting when you want that.
+scholarships — that also ships as a Claude/Codex skill. Point your agent at it and it sweeps
+your inbox on a schedule, updates your rows from what it finds, drafts you a digest of where
+everything stands, and tailors your résumé for a posting when you ask.
 
 Password-gated and single-user. Your data lives in **your** Supabase project; nobody else's
 server ever sees it. Everything agent-related is optional — it works as a plain tracker with
@@ -32,6 +33,21 @@ Radix primitives · Vercel
 - **Doubles as an agent skill** — [`skill/SKILL.md`](skill/SKILL.md) drops into Claude Code,
   Codex, or Cursor and drives everything above through a bearer-token API. It carries no
   personal data; it reads yours from your own deployment at runtime.
+- **Scheduled inbox sweeps** — set it to run daily and your agent reads your email for
+  anything about applications you've made, then updates the rows itself: rejections,
+  interview invitations, offers, assessment deadlines, things you applied to and forgot to
+  log. It writes only unambiguous signals and flags the judgement calls instead of guessing,
+  because a tracker you have to double-check is worse than the spreadsheet it replaced.
+- **A digest of where everything stands** — each run ends with an email **drafted** (never
+  sent) covering what changed, what it deliberately didn't write, what's waiting on *you*
+  with a real deadline, and what's had no reply in three weeks. It stays quiet on days with
+  nothing to report — a daily email that's usually empty trains you to ignore the one that
+  matters. [The full prompt is in this README](#automate-it-with-an-ai-agent), ready to
+  paste.
+
+  *This part is the agent's doing, not the app's* — the app exposes the API, and your
+  assistant does the reading and writing. You need an agent with email access and a
+  scheduler; on a local one, "daily" means whenever your machine is actually on.
 
 ---
 

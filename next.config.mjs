@@ -1,6 +1,53 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+
+  /*
+   * Baseline security headers.
+   *
+   * The session cookie is SameSite=Lax, so a cross-site iframe already loads
+   * unauthenticated and clickjacking an authenticated action is largely blocked
+   * on its own. These are defense in depth rather than the primary control:
+   * frame-ancestors closes framing outright, nosniff prevents MIME confusion,
+   * and the referrer policy keeps the app's URLs out of third-party logs when
+   * following a listing link.
+   */
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
+          },
+          {
+            // Next injects inline styles and hydration scripts, so
+            // 'unsafe-inline' is required here; the meaningful directives are
+            // frame-ancestors and the connect/img restrictions.
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: blob:",
+              "font-src 'self' data:",
+              "connect-src 'self' https://*.supabase.co",
+              "frame-ancestors 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
+            ].join('; '),
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

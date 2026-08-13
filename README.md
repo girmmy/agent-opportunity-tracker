@@ -88,16 +88,20 @@ http://localhost:3000 → login screen → your password.
 
 ### 5. Deploy to Vercel
 
-```bash
-git init && git add -A && git commit -m "Initial commit"
-```
+Import the repo in Vercel, then add these under **Project Settings → Environment
+Variables**. Values are the same as `.env.local`.
 
-Push to a GitHub repo, then import it in Vercel. Before the first deploy finishes, add
-all five environment variables under **Project Settings → Environment Variables**
-(same values as `.env.local`).
+| Variable | Needed in Vercel? |
+|---|---|
+| `APP_PASSWORD_HASH` | Yes |
+| `AUTH_SECRET` | Yes |
+| `NEXT_PUBLIC_SUPABASE_URL` | Yes |
+| `SUPABASE_SECRET_KEY` | Yes — the `sb_secret_…` key. `SUPABASE_SERVICE_ROLE_KEY` is also accepted for older projects. |
+| `AGENT_API_TOKEN` | Only if the weekly agent will post to `/api/agent/opportunities` |
+| `DATABASE_URL` | **No.** Migrations run from your machine; putting a full Postgres connection string in the deployment environment widens the blast radius for nothing. |
 
-`.gitignore` already excludes `.env.local`, so the secrets stay local. Verify with
-`git status` before your first push that no `.env` file is staged.
+`.gitignore` excludes `.env.local` and `data/seed.json`. Confirm with `git status`
+before pushing that no `.env` file is staged.
 
 ---
 

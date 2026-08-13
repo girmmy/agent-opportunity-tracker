@@ -2,12 +2,14 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { House, LayoutList, LogOut, Target } from 'lucide-react';
+import { House, LayoutList, LogOut, Settings2, Target } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const TABS = [
   { href: '/', label: 'Overview', icon: House },
   { href: '/opportunities', label: 'All', icon: LayoutList },
+  // Icon-only on phones so three tabs still fit at 375px.
+  { href: '/settings', label: 'Profile', icon: Settings2, compact: true },
 ];
 
 export function TopBar() {
@@ -70,7 +72,9 @@ export function TopBar() {
                   className="size-4 shrink-0"
                   strokeWidth={active ? 2.4 : 2}
                 />
-                {tab.label}
+                <span className={tab.compact ? 'hidden sm:inline' : undefined}>
+                  {tab.label}
+                </span>
               </Link>
             );
           })}

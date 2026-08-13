@@ -34,6 +34,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { DatePicker, relativeDay } from '@/components/ui/date-picker';
+import { AiPanel } from '@/components/AiPanel';
 import { cn } from '@/lib/utils';
 import {
   CATEGORIES,
@@ -83,7 +84,13 @@ function shortDate(value: string | null | undefined): string {
   ).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: '2-digit' });
 }
 
-export function OpportunitiesView({ initial }: { initial: Opportunity[] }) {
+export function OpportunitiesView({
+  initial,
+  aiEnabled,
+}: {
+  initial: Opportunity[];
+  aiEnabled: boolean;
+}) {
   const router = useRouter();
 
   const [rows, setRows] = React.useState<Opportunity[]>(initial);
@@ -764,6 +771,22 @@ export function OpportunitiesView({ initial }: { initial: Opportunity[] }) {
       >
         {draft && (
           <DialogContent title={draft.id ? 'Edit' : 'Add opportunity'}>
+            {aiEnabled && (
+              <div className="mb-4">
+                <AiPanel
+                  draft={draft}
+                  onApplyFields={(patch) => setDraft({ ...draft, ...patch })}
+                  onApplyFit={(fit, note) =>
+                    setDraft({
+                      ...draft,
+                      fit,
+                      notes: draft.notes ? `${draft.notes}\n\n${note}` : note,
+                    })
+                  }
+                />
+              </div>
+            )}
+
             <div className="grid gap-3.5 sm:grid-cols-2">
               <div className="flex flex-col gap-1.5">
                 <Label htmlFor="f-org">Organization</Label>

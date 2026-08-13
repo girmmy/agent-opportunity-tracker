@@ -21,6 +21,8 @@ Radix primitives · Vercel
   Full-time — tracked across multiple cycles, so it doesn't go stale after one season.
 - **A fit rating** you set honestly (Strong / Good / Weak / Unknown), plus which résumé
   you sent and a link to the original listing.
+- **Optional AI assist** — paste a job description and either pre-fill the form or get an
+  honest fit read against your stored profile. Off unless you supply an API key.
 
 ---
 
@@ -92,6 +94,8 @@ under **Project Settings → Environment Variables**:
 | `SUPABASE_SECRET_KEY` | Yes |
 | `OWNER_NAME` | Optional — greets you by name |
 | `AGENT_API_TOKEN` | Optional — only for the automation endpoint |
+| `ANTHROPIC_API_KEY` | Optional — turns on the AI features. Billed to your own account. |
+| `CLAUDE_MODEL` | Optional — defaults to `claude-opus-4-6` |
 | `DATABASE_URL` | **No.** Migrations run from your machine. A superuser connection string in the deployment environment is exposure for no benefit. |
 
 ---
@@ -133,6 +137,39 @@ Being honest about what this isn't:
 - **IP-based rate limiting trusts `x-forwarded-for`.** Correct behind Vercel, which sets it
   at the edge. Self-hosting behind an untrusted proxy, that header is spoofable — the
   password hash, not the limiter, is the real boundary.
+
+---
+
+## The AI features
+
+Both are optional. With no `ANTHROPIC_API_KEY` the app behaves exactly as it did before
+and the controls don't render — the template shouldn't force an API bill on anyone.
+
+Fill in **Profile** first (the nav's settings tab). Fit analysis is judged against it, and
+a rating against an empty profile is meaningless — the endpoint returns 428 rather than
+inventing something.
+
+**Fill the blanks** — paste a posting, get organization / role / type / cycle / deadline /
+listing URL extracted into the form. Every field is nullable and only *empty* fields are
+filled, so it never overwrites something you typed. The prompt is told to return null
+rather than infer, because a wrong value costs you more attention than a blank one.
+
+**Rate the fit** — paste a posting, get Strong / Good / Weak / Unknown with named matches,
+named gaps, and any hard eligibility barrier called out separately from skill fit.
+
+The prompt deliberately pushes against the model's instinct to be encouraging:
+
+> "Weak" is a legitimate and useful verdict. […] Never infer fit from the company's
+> reputation, size, or how desirable the role sounds. […] Flag hard eligibility barriers
+> separately from skill fit.
+
+An inflated rating costs a real application slot, which is worse than no rating at all.
+Anything machine-written is labelled *Analyzed with Claude* in the UI, and nothing is
+written to the database until you review it and hit Save.
+
+Implementation: `lib/claude.ts`, `app/api/ai/*`. Structured output via Zod schemas so
+responses are validated rather than string-parsed, and API errors are mapped to
+actionable messages (bad key vs. rate limit vs. spent credit).
 
 ---
 

@@ -61,7 +61,7 @@ function LoginForm() {
             password field doesn't already say. Type carries it instead. */}
         <div className="mb-6 text-center">
           <h1 className="text-[24px] font-semibold leading-tight tracking-[-0.023em]">
-            Opportunity Tracker
+            Agent Opportunity Tracker
           </h1>
           <p className="mt-2 text-[13.5px] text-[var(--label-2)]">
             Enter your password to continue

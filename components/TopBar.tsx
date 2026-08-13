@@ -37,8 +37,11 @@ export function TopBar() {
           aria-label="Go to overview"
           className="flex min-h-11 shrink-0 items-center rounded-[12px] text-[17px] font-semibold tracking-[-0.02em] transition-opacity duration-150 hover:opacity-70 active:scale-[0.98] sm:text-[19px]"
         >
+          {/* Three widths. "Agent" is the word that distinguishes this from
+              any other tracker, so it survives longest as space shrinks. */}
           <span className="sm:hidden">Tracker</span>
-          <span className="hidden sm:inline">Opportunity Tracker</span>
+          <span className="hidden sm:inline lg:hidden">Agent Tracker</span>
+          <span className="hidden lg:inline">Agent Opportunity Tracker</span>
         </Link>
 
         <nav

@@ -39,7 +39,10 @@ export function TopBar() {
           <span className="grid size-9 place-items-center rounded-[10px] bg-[var(--accent)] shadow-[var(--shadow-sm)]">
             <Target className="size-[18px] text-white" strokeWidth={2.4} />
           </span>
-          <span className="serif hidden text-[19px] leading-none sm:inline">
+          {/* Sans, not the display face. A serif wordmark next to icon chrome
+              reads as a mismatch — the serif belongs to editorial moments, not
+              to persistent UI furniture. */}
+          <span className="hidden text-[16px] font-semibold tracking-[-0.017em] sm:inline">
             Opportunity Tracker
           </span>
         </Link>

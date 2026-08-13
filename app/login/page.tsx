@@ -59,7 +59,9 @@ function LoginForm() {
           <div className="mb-3.5 grid size-12 place-items-center rounded-[14px] bg-[var(--accent)] shadow-[var(--shadow-md)]">
             <Lock className="size-5 text-white" strokeWidth={2.5} />
           </div>
-          <h1 className="serif text-[27px] leading-tight">
+          {/* Same wordmark as the nav bar, so it gets the same treatment — a
+              logo that changes face between screens reads as an accident. */}
+          <h1 className="text-[21px] font-semibold leading-tight tracking-[-0.021em]">
             Opportunity Tracker
           </h1>
           <p className="mt-1.5 text-[13px] text-[var(--label-2)]">

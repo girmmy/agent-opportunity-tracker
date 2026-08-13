@@ -32,7 +32,12 @@ function FeatureCard({ o }: { o: Opportunity }) {
     >
       <div className="flex items-start gap-3">
         <div className="min-w-0 flex-1">
-          <div className="serif text-[21px] leading-[1.15]">{o.role}</div>
+          {/* Role names are data, not headlines — they carry job numbers and
+              parentheticals that the serif's high contrast makes harder to
+              scan. Weight and size do the emphasis instead. */}
+          <div className="text-[17px] font-semibold leading-snug tracking-[-0.017em]">
+            {o.role}
+          </div>
           <div className="mt-0.5 text-[14px] text-[var(--label-2)]">
             {o.organization}
             {o.cycle ? ` · ${o.cycle}` : ''}

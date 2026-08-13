@@ -310,10 +310,12 @@
   font-size: 13px;
 }
 
+/* Sans: the month caption is control chrome inside a popover, not an
+   editorial moment. Same rule as the wordmark. */
 .rdp-month_caption {
-  font-family: var(--font-serif);
-  font-size: 18px;
-  letter-spacing: -0.01em;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
   padding: 0 0 0.5rem;
 }
 

@@ -308,7 +308,7 @@ right now" a single query instead of a six-way union.
 | `opportunity_type` | Internship · Contract · Program · Research · Full-time |
 | `category` | SWE · AI/ML · Product · Data · Research · Other · Unclear |
 | `cycle` | Free text — `Summer 2027`, `Ongoing`. This is what makes it multi-year: filter by cycle, archive old ones rather than deleting. |
-| `status` | Not Applied Yet → In Progress → Waiting → Interview → Offer Received → Accepted / Active → Completed. Plus Return Offer, Rejected, Withdrawn / Lapsed. |
+| `status` | Not Applied Yet → In Progress → Waiting → Interview → Offer Received → Accepted / Active → Completed. Plus Not Yet Open (target program hasn't posted its next cycle — nothing to apply to yet), Return Offer, Rejected, Withdrawn / Lapsed. |
 | `fit` | Strong / Good / Weak / Unknown. Rate it only after actually reading the posting — `Unknown` is the honest default. |
 | `resume_used` | Filename of whatever you submitted |
 | `listing_url` | The original posting |

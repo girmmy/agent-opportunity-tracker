@@ -128,7 +128,9 @@ export default async function OverviewPage() {
   const awaiting = opportunities.filter(
     (o) => o.status === 'Waiting for Response'
   );
-  const notApplied = opportunities.filter((o) => o.status === 'Not Applied Yet');
+  const notApplied = opportunities.filter(
+    (o) => o.status === 'Not Applied Yet' || o.status === 'Not Yet Open'
+  );
 
   const events = collectEvents(opportunities);
 

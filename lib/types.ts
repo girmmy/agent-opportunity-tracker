@@ -9,6 +9,7 @@ export type OpportunityType = (typeof OPPORTUNITY_TYPES)[number];
 
 export const STATUSES = [
   'Not Applied Yet',
+  'Not Yet Open',
   'In Progress (Applying)',
   'Waiting for Response',
   'Interview in Progress',
@@ -98,6 +99,7 @@ export const CLOSED_STATUSES: Status[] = [
    meaning, so they map to iOS system colors rather than brand blue. */
 export const STATUS_COLORS: Record<Status, string> = {
   'Not Applied Yet': 'var(--label-3)',
+  'Not Yet Open': 'var(--yellow)',
   'In Progress (Applying)': 'var(--orange)',
   'Waiting for Response': 'var(--blue)',
   'Interview in Progress': 'var(--purple)',

@@ -32,6 +32,7 @@ function bandFor(status: Opportunity['status']): BandKey {
     case 'In Progress (Applying)':
       return 'waiting';
     case 'Not Applied Yet':
+    case 'Not Yet Open':
       return 'todo';
     default:
       return 'closed';

@@ -28,7 +28,7 @@ Radix primitives · Vercel
 
 ## Deploy your own
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fgirmmy%2Fopportunity-tracker&env=APP_PASSWORD_HASH,AUTH_SECRET,NEXT_PUBLIC_SUPABASE_URL,SUPABASE_SECRET_KEY&envDescription=Generate%20the%20auth%20values%20with%20npm%20run%20hash-password%2C%20and%20get%20the%20Supabase%20ones%20from%20Settings%20-%3E%20API%20Keys&envLink=https%3A%2F%2Fgithub.com%2Fgirmmy%2Fopportunity-tracker%23deploy-your-own&project-name=opportunity-tracker&repository-name=opportunity-tracker)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fgirmmy%2Fagent-opportunity-tracker&env=APP_PASSWORD_HASH,AUTH_SECRET,NEXT_PUBLIC_SUPABASE_URL,SUPABASE_SECRET_KEY&envDescription=Generate%20the%20auth%20values%20with%20npm%20run%20hash-password%2C%20and%20get%20the%20Supabase%20ones%20from%20Settings%20-%3E%20API%20Keys&envLink=https%3A%2F%2Fgithub.com%2Fgirmmy%2Fagent-opportunity-tracker%23deploy-your-own&project-name=agent-opportunity-tracker&repository-name=agent-opportunity-tracker)
 
 The button clones the repo and asks for the four required env vars. You'll need a Supabase
 project first — steps below. Free tiers on both Supabase and Vercel are plenty for this.
@@ -42,7 +42,7 @@ you to set; you'll want it for step 3.
 
 ```bash
 git clone https://github.com/girmmy/agent-opportunity-tracker.git
-cd opportunity-tracker
+cd agent-opportunity-tracker
 npm install
 npm run hash-password
 ```

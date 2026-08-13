@@ -93,6 +93,10 @@ console.log(`
 Done. Add these to .env.local (local dev) and to Vercel's environment
 variables (Project Settings -> Environment Variables) for production.
 
+Resetting a forgotten password? Replace APP_PASSWORD_HASH with the value below,
+then REDEPLOY — Vercel does not apply new env vars to an existing deployment.
+You can leave AUTH_SECRET alone unless you also want to sign out every device.
+
 APP_PASSWORD_HASH=${stored}
 AUTH_SECRET=${authSecret}
 AGENT_API_TOKEN=${agentToken}

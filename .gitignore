@@ -21,3 +21,6 @@ next-env.d.ts
 # data/seed.example.json instead so this can be public without publishing
 # an application history (or anyone else's contact details).
 data/seed.json
+
+# Local data backups from `npm run export` — real application history.
+backups/

@@ -125,6 +125,36 @@ What's here instead:
   *every* attempt for its duration, including a correct password — otherwise the lockout
   is cosmetic and an attacker just keeps guessing.
 
+### If you forget the password
+
+There's no reset email, because there are no accounts — but recovery is quick, and
+**your data is never at risk**. It lives in Supabase; the password only gates the app.
+
+1. `npm run hash-password` — pick a new one
+2. Replace `APP_PASSWORD_HASH` in Vercel (Settings → Environment Variables) and in
+   `.env.local`
+3. **Redeploy.** Vercel doesn't apply new env vars to an existing deployment.
+
+Two related things worth knowing:
+
+- **Changing `AUTH_SECRET` signs out every device.** That's the break-glass move if you
+  think a session cookie leaked — there's no per-session revocation.
+- **A lockout refuses the correct password too.** Ten wrong attempts locks that IP for 15
+  minutes, deliberately: a lockout that lets a correct guess through isn't a lockout. If
+  you fat-finger it repeatedly, wait it out.
+
+Even completely locked out of the app, you can read or export everything from the Supabase
+dashboard directly.
+
+### Backups
+
+`npm run export` writes a full snapshot to `backups/` and refreshes `data/seed.json`.
+Both are gitignored — they hold a real application history.
+
+That file is the rebuild path: with a fresh Supabase project, `npm run migrate` then
+`npm run seed` restores everything. Worth running occasionally, since otherwise the
+database is the only copy that exists.
+
 ### Known limits
 
 Being honest about what this isn't:

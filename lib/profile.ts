@@ -1,6 +1,7 @@
 import { supabaseAdmin, isSupabaseConfigured } from '@/lib/supabase';
 
 export interface Profile {
+  full_name: string | null;
   headline: string | null;
   summary: string | null;
   skills: string | null;
@@ -12,6 +13,7 @@ export interface Profile {
 }
 
 export const EMPTY_PROFILE: Profile = {
+  full_name: null,
   headline: null,
   summary: null,
   skills: null,
@@ -22,6 +24,7 @@ export const EMPTY_PROFILE: Profile = {
 };
 
 export const PROFILE_FIELDS = [
+  'full_name',
   'headline',
   'summary',
   'skills',
@@ -65,6 +68,7 @@ export function profileIsUsable(p: Profile): boolean {
  */
 export function profileToPrompt(p: Profile): string {
   const parts: [string, string | null][] = [
+    ['Full name', p.full_name],
     ['Current situation', p.headline],
     ['Summary', p.summary],
     ['Skills and technologies', p.skills],

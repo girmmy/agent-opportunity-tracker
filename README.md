@@ -212,7 +212,28 @@ An inflated rating costs a real application slot, which is worse than no rating 
 Anything machine-written is labelled *Analyzed with Claude* in the UI, and nothing is
 written to the database until you review it and hit Save.
 
-Implementation: `lib/claude.ts`, `app/api/ai/*`. Structured output via Zod schemas so
+**Tailor résumé** — paste a posting, get your existing experience reordered and reworded
+for it: which items to list in what order, rewritten bullets each tied to the specific
+requirement it answers, a reordered skills line, what to cut for one page, and a filename
+to save it as.
+
+It only reorders and rewords what's already in your profile. It cannot add anything. The
+failure mode worth understanding is subtler than outright invention — it's
+**cross-attribution**: the model reads "we want Next.js", sees Next.js somewhere in your
+profile, and quietly attaches it to a job where you actually used something else. Every
+individual fact is true and the sentence is still a lie. In testing it did exactly this,
+crediting a React Native role with Next.js, so the prompt now names that failure and
+requires each bullet to use only the technologies the profile lists for that specific item.
+
+When the posting asks for something you genuinely don't have, it says so in an
+`honesty_note` shown first and in warning colour, rather than papering over the gap. A
+résumé that wins an interview by implying skills you lack just fails at the interview
+instead.
+
+Set your name in **Profile** — it's used for the filename, and without it you get a
+description of yourself where your name should be.
+
+Implementation: `lib/ai.ts`, `app/api/ai/*`. Structured output via Zod schemas so
 responses are validated rather than string-parsed, and API errors are mapped to
 actionable messages (bad key vs. rate limit vs. spent credit).
 

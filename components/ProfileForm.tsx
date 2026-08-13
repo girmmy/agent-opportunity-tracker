@@ -14,6 +14,11 @@ const SECTIONS: {
   rows?: number;
 }[] = [
   {
+    key: 'full_name',
+    label: 'Your name',
+    placeholder: 'Used for tailored résumé filenames.',
+  },
+  {
     key: 'headline',
     label: 'Where you are right now',
     placeholder: 'e.g. Incoming CS freshman at Georgia Tech, based in Atlanta',

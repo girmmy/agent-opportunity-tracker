@@ -6,6 +6,7 @@ import {
   ArrowUpRight,
   ArrowUpDown,
   Check,
+  ChevronRight,
   Columns3,
   Filter,
   Plus,
@@ -110,6 +111,7 @@ export function OpportunitiesView({
   const [draft, setDraft] = React.useState<Draft | null>(null);
   const [saving, setSaving] = React.useState(false);
   const [saveError, setSaveError] = React.useState('');
+  const [showMore, setShowMore] = React.useState(false);
 
   // Column choices are a per-device preference, not shared state — localStorage
   // rather than the database. Read after mount so SSR and client markup match.
@@ -295,6 +297,23 @@ export function OpportunitiesView({
   }
 
   const shown = COLUMNS.filter((c) => visibleCols.includes(c.key));
+
+  /** How many collapsed fields hold a value — so hiding them never hides data. */
+  const filledExtras = draft
+    ? (
+        [
+          'cycle',
+          'resume_used',
+          'date_applied',
+          'deadline',
+          'listing_url',
+          'source',
+        ] as const
+      ).filter((k) => {
+        const v = draft[k];
+        return v !== undefined && v !== null && v !== '';
+      }).length
+    : 0;
 
   function cellFor(r: Opportunity, key: string) {
     switch (key) {
@@ -783,10 +802,16 @@ export function OpportunitiesView({
                       notes: draft.notes ? `${draft.notes}\n\n${note}` : note,
                     })
                   }
+                  onApplyResume={(filename) =>
+                    setDraft({ ...draft, resume_used: filename })
+                  }
                 />
               </div>
             )}
 
+            {/* Only the fields that actually get touched are visible. The
+                other eight sat in a wall you had to scroll past every time to
+                reach Save — they're one tap away instead. */}
             <div className="grid gap-3.5 sm:grid-cols-2">
               <div className="flex flex-col gap-1.5">
                 <Label htmlFor="f-org">Organization</Label>
@@ -809,54 +834,10 @@ export function OpportunitiesView({
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <Label>Type</Label>
-                <Select
-                  value={draft.opportunity_type}
-                  onValueChange={(v) =>
-                    setDraft({ ...draft, opportunity_type: v as OpportunityType })
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {OPPORTUNITY_TYPES.map((t) => (
-                      <SelectItem key={t} value={t}>
-                        {t}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <Label>Category</Label>
-                <Select
-                  value={draft.category}
-                  onValueChange={(v) =>
-                    setDraft({ ...draft, category: v as Opportunity['category'] })
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {CATEGORIES.map((c) => (
-                      <SelectItem key={c} value={c}>
-                        {c}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="flex flex-col gap-1.5">
                 <Label>Status</Label>
                 <Select
                   value={draft.status}
-                  onValueChange={(v) =>
-                    setDraft({ ...draft, status: v as Status })
-                  }
+                  onValueChange={(v) => setDraft({ ...draft, status: v as Status })}
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -889,86 +870,149 @@ export function OpportunitiesView({
                   </SelectContent>
                 </Select>
               </div>
-
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="f-cycle">Cycle</Label>
-                <Input
-                  id="f-cycle"
-                  placeholder="Summer 2027 / Ongoing"
-                  value={draft.cycle ?? ''}
-                  onChange={(e) => setDraft({ ...draft, cycle: e.target.value })}
-                />
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="f-resume">Résumé used</Label>
-                <Input
-                  id="f-resume"
-                  placeholder="master, or a filename"
-                  value={draft.resume_used ?? ''}
-                  onChange={(e) =>
-                    setDraft({ ...draft, resume_used: e.target.value })
-                  }
-                />
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="f-applied">Date applied</Label>
-                <DatePicker
-                  id="f-applied"
-                  value={draft.date_applied}
-                  onChange={(v) => setDraft({ ...draft, date_applied: v })}
-                  placeholder="Not applied"
-                />
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="f-deadline">Deadline</Label>
-                <DatePicker
-                  id="f-deadline"
-                  value={draft.deadline}
-                  onChange={(v) => setDraft({ ...draft, deadline: v })}
-                  placeholder="No deadline"
-                />
-              </div>
             </div>
 
-            <div className="mt-3.5 grid gap-3.5">
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="f-url">Listing URL</Label>
-                <Input
-                  id="f-url"
-                  type="url"
-                  inputMode="url"
-                  placeholder="https://"
-                  value={draft.listing_url ?? ''}
-                  onChange={(e) =>
-                    setDraft({ ...draft, listing_url: e.target.value })
-                  }
-                />
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="f-source">Source</Label>
-                <Input
-                  id="f-source"
-                  placeholder="email, referral, target list…"
-                  value={draft.source ?? ''}
-                  onChange={(e) =>
-                    setDraft({ ...draft, source: e.target.value })
-                  }
-                />
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <Label htmlFor="f-notes">Notes</Label>
-                <Textarea
-                  id="f-notes"
-                  value={draft.notes ?? ''}
-                  onChange={(e) => setDraft({ ...draft, notes: e.target.value })}
-                />
-              </div>
+            <div className="mt-3.5 flex flex-col gap-1.5">
+              <Label htmlFor="f-notes">Notes</Label>
+              <Textarea
+                id="f-notes"
+                rows={3}
+                value={draft.notes ?? ''}
+                onChange={(e) => setDraft({ ...draft, notes: e.target.value })}
+              />
             </div>
+
+            <button
+              type="button"
+              onClick={() => setShowMore((v) => !v)}
+              aria-expanded={showMore}
+              className="mt-3 flex w-full items-center gap-1.5 rounded-[10px] px-1 py-2 text-[13px] font-medium text-[var(--label-2)] transition-colors hover:text-[var(--label)]"
+            >
+              <ChevronRight
+                className={cn(
+                  'size-4 transition-transform duration-200',
+                  showMore && 'rotate-90'
+                )}
+              />
+              {showMore ? 'Fewer fields' : 'More fields'}
+              {!showMore && filledExtras > 0 && (
+                <span className="tnum ml-0.5 rounded-full bg-[var(--surface-sunken)] px-1.5 text-[11px] text-[var(--label-3)]">
+                  {filledExtras} set
+                </span>
+              )}
+            </button>
+
+            {showMore && (
+              <div className="grid gap-3.5 border-t border-[var(--separator)] pt-3.5 sm:grid-cols-2">
+                <div className="flex flex-col gap-1.5">
+                  <Label>Type</Label>
+                  <Select
+                    value={draft.opportunity_type}
+                    onValueChange={(v) =>
+                      setDraft({ ...draft, opportunity_type: v as OpportunityType })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {OPPORTUNITY_TYPES.map((t) => (
+                        <SelectItem key={t} value={t}>
+                          {t}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <Label>Category</Label>
+                  <Select
+                    value={draft.category}
+                    onValueChange={(v) =>
+                      setDraft({ ...draft, category: v as Opportunity['category'] })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {CATEGORIES.map((c) => (
+                        <SelectItem key={c} value={c}>
+                          {c}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="f-cycle">Cycle</Label>
+                  <Input
+                    id="f-cycle"
+                    placeholder="Summer 2027 / Ongoing"
+                    value={draft.cycle ?? ''}
+                    onChange={(e) => setDraft({ ...draft, cycle: e.target.value })}
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="f-resume">Résumé used</Label>
+                  <Input
+                    id="f-resume"
+                    placeholder="master, or a filename"
+                    value={draft.resume_used ?? ''}
+                    onChange={(e) =>
+                      setDraft({ ...draft, resume_used: e.target.value })
+                    }
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="f-applied">Date applied</Label>
+                  <DatePicker
+                    id="f-applied"
+                    value={draft.date_applied}
+                    onChange={(v) => setDraft({ ...draft, date_applied: v })}
+                    placeholder="Not applied"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="f-deadline">Deadline</Label>
+                  <DatePicker
+                    id="f-deadline"
+                    value={draft.deadline}
+                    onChange={(v) => setDraft({ ...draft, deadline: v })}
+                    placeholder="No deadline"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5 sm:col-span-2">
+                  <Label htmlFor="f-url">Listing URL</Label>
+                  <Input
+                    id="f-url"
+                    type="url"
+                    inputMode="url"
+                    placeholder="https://"
+                    value={draft.listing_url ?? ''}
+                    onChange={(e) =>
+                      setDraft({ ...draft, listing_url: e.target.value })
+                    }
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5 sm:col-span-2">
+                  <Label htmlFor="f-source">Source</Label>
+                  <Input
+                    id="f-source"
+                    placeholder="email, referral, target list…"
+                    value={draft.source ?? ''}
+                    onChange={(e) => setDraft({ ...draft, source: e.target.value })}
+                  />
+                </div>
+              </div>
+            )}
 
             {saveError && (
               <p role="alert" className="mt-3 text-[13px] font-medium text-[var(--red)]">

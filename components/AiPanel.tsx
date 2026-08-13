@@ -1,7 +1,15 @@
 'use client';
 
 import * as React from 'react';
-import { LoaderCircle, Sparkles, TriangleAlert, Wand2 } from 'lucide-react';
+import {
+  Check,
+  Copy,
+  FileText,
+  LoaderCircle,
+  Sparkles,
+  TriangleAlert,
+  Wand2,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea, Label } from '@/components/ui/input';
 import { Pill } from '@/components/Pill';
@@ -14,6 +22,15 @@ interface FitAnalysis {
   gaps: string[];
   eligibility_concern: string | null;
   lead_with: string[];
+}
+
+interface TailoredResume {
+  filename: string;
+  order: string[];
+  bullets: { item: string; text: string; why: string }[];
+  skills_line: string;
+  drop: string[];
+  honesty_note: string | null;
 }
 
 interface ExtractedFields {
@@ -39,18 +56,24 @@ export function AiPanel({
   draft,
   onApplyFields,
   onApplyFit,
+  onApplyResume,
 }: {
   draft: Partial<Opportunity>;
   onApplyFields: (fields: Partial<Opportunity>) => void;
   onApplyFit: (fit: Fit, note: string) => void;
+  onApplyResume: (filename: string) => void;
 }) {
   const [posting, setPosting] = React.useState('');
-  const [busy, setBusy] = React.useState<'extract' | 'fit' | null>(null);
+  const [busy, setBusy] = React.useState<'extract' | 'fit' | 'resume' | null>(
+    null
+  );
   const [error, setError] = React.useState('');
   const [analysis, setAnalysis] = React.useState<FitAnalysis | null>(null);
+  const [resume, setResume] = React.useState<TailoredResume | null>(null);
   const [extracted, setExtracted] = React.useState(false);
+  const [copied, setCopied] = React.useState(false);
 
-  async function run(kind: 'extract' | 'fit') {
+  async function run(kind: 'extract' | 'fit' | 'resume') {
     setBusy(kind);
     setError('');
     try {
@@ -95,8 +118,10 @@ export function AiPanel({
         onApplyFields(patch);
         setExtracted(true);
         setTimeout(() => setExtracted(false), 2500);
-      } else {
+      } else if (kind === 'fit') {
         setAnalysis(data.analysis as FitAnalysis);
+      } else {
+        setResume(data.resume as TailoredResume);
       }
     } catch {
       setError('Network error.');
@@ -165,6 +190,20 @@ export function AiPanel({
           )}
           Rate the fit
         </Button>
+
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={() => run('resume')}
+          disabled={busy !== null || posting.trim().length < 40}
+        >
+          {busy === 'resume' ? (
+            <LoaderCircle className="size-3.5 animate-spin" />
+          ) : (
+            <FileText className="size-3.5" />
+          )}
+          Tailor résumé
+        </Button>
       </div>
 
       {error && (
@@ -211,7 +250,117 @@ export function AiPanel({
             </Button>
             {/* Labelled so it's always clear which text a machine wrote. */}
             <span className="text-[11px] text-[var(--label-3)]">
-              Analyzed with Claude · review before saving
+              AI-generated · review before saving
+            </span>
+          </div>
+        </div>
+      )}
+
+      {resume && (
+        <div className="mt-3 rounded-[var(--radius-apple)] bg-[var(--surface)] p-3">
+          {/* Surfaced first and in warning colour: a real gap is the one thing
+              you must not let a tailored résumé paper over. */}
+          {resume.honesty_note && (
+            <p className="mb-2.5 rounded-md bg-[color-mix(in_srgb,var(--orange)_12%,transparent)] px-2 py-1.5 text-[12.5px] leading-snug text-[var(--orange)]">
+              {resume.honesty_note}
+            </p>
+          )}
+
+          <div className="mb-2 flex flex-wrap items-center gap-2">
+            <span className="text-[10.5px] font-bold uppercase tracking-[0.1em] text-[var(--label-3)]">
+              Save as
+            </span>
+            <code className="rounded bg-[var(--surface-sunken)] px-1.5 py-0.5 text-[12px]">
+              {resume.filename}
+            </code>
+          </div>
+
+          {resume.order.length > 0 && (
+            <p className="mb-2.5 text-[12.5px] text-[var(--label-2)]">
+              <span className="font-semibold">Order:</span>{' '}
+              {resume.order.join(' → ')}
+            </p>
+          )}
+
+          <div className="flex flex-col gap-2">
+            {resume.bullets.map((b, i) => (
+              <div key={i} className="rounded-md bg-[var(--surface-sunken)] p-2">
+                <div className="text-[10.5px] font-bold uppercase tracking-[0.08em] text-[var(--label-3)]">
+                  {b.item}
+                </div>
+                <p className="mt-1 text-[12.5px] leading-snug">{b.text}</p>
+                <p className="mt-1 text-[11.5px] italic text-[var(--label-3)]">
+                  {b.why}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {resume.skills_line && (
+            <div className="mt-2.5">
+              <div className="mb-1 text-[10.5px] font-bold uppercase tracking-[0.1em] text-[var(--label-3)]">
+                Skills line
+              </div>
+              <p className="text-[12.5px] leading-snug text-[var(--label-2)]">
+                {resume.skills_line}
+              </p>
+            </div>
+          )}
+
+          {resume.drop.length > 0 && (
+            <div className="mt-2.5">
+              <div className="mb-1 text-[10.5px] font-bold uppercase tracking-[0.1em] text-[var(--orange)]">
+                Cut to fit one page
+              </div>
+              <ul className="flex flex-col gap-0.5">
+                {resume.drop.map((d, i) => (
+                  <li key={i} className="text-[12.5px] text-[var(--label-2)]">
+                    {d}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={async () => {
+                const text = [
+                  `# ${resume.filename}`,
+                  '',
+                  `Order: ${resume.order.join(' → ')}`,
+                  '',
+                  ...resume.bullets.map((b) => `[${b.item}] ${b.text}`),
+                  '',
+                  `Skills: ${resume.skills_line}`,
+                  resume.drop.length ? `\nCut: ${resume.drop.join('; ')}` : '',
+                  resume.honesty_note ? `\nGap: ${resume.honesty_note}` : '',
+                ].join('\n');
+                try {
+                  await navigator.clipboard.writeText(text);
+                  setCopied(true);
+                  setTimeout(() => setCopied(false), 2000);
+                } catch {
+                  setError('Clipboard unavailable — select the text manually.');
+                }
+              }}
+            >
+              {copied ? <Check className="size-3.5" /> : <Copy className="size-3.5" />}
+              {copied ? 'Copied' : 'Copy'}
+            </Button>
+
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => onApplyResume(resume.filename)}
+            >
+              Record as résumé used
+            </Button>
+
+            <span className="text-[11px] text-[var(--label-3)]">
+              AI-generated · reorders your profile, never invents
             </span>
           </div>
         </div>

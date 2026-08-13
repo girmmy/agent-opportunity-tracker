@@ -87,6 +87,11 @@ user real application slots, which are finite and expensive.
 
 ## Sweeping email
 
+**Read-only.** Read as much as you need — that context is the entire point. But never
+create, edit, or send a message, and never label, archive, or trash one. Leave the mailbox
+exactly as you found it. What you learn goes into the tracker and into what you tell the
+user; nothing goes back into their email.
+
 If you have inbox access, this is the highest-value thing you do. The dangerous failure is
 not writing something wrong — it's finding nothing and reporting a clean run. A missed email
 is indistinguishable from a quiet week.

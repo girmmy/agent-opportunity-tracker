@@ -402,6 +402,10 @@ looking for, and what I'm eligible for. Everything below depends on it.
 Start by GETting every row. That's the source of truth for what's tracked and
 when each last changed.
 
+## My email is read-only to you
+Read whatever you need — that context is the point of this run. Never write,
+send, label, archive, or delete anything. Leave the mailbox as you found it.
+
 ## Searching my email — do all four passes
 
 A keyword search on job vocabulary is NOT sufficient and will miss things that

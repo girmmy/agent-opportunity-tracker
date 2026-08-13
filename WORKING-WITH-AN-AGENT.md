@@ -14,7 +14,7 @@ mostly four files and a scheduled task.
 
 Things that work well:
 
-- **Sweep your inbox** and update rows from application email — rejections, interview
+- **Sweep your inbox (read-only)** and update rows from application email — rejections, interview
   invitations, offers, confirmations for things you forgot to log.
 - **Find and read the actual posting** for a row, then set an honest fit rating.
 - **Catch what you'd miss.** A daily sweep found an assessment deadline buried in a

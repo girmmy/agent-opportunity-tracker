@@ -246,6 +246,13 @@ than duplicate. `GET` returns everything.
 Deliberately outside the cookie auth — a script has no browser session — and checks its own
 bearer token instead.
 
+**This exists so you can point an AI assistant at your own tracker.** Pair it with a
+recurring task and a rules file and the boring parts — logging applications, updating
+statuses from email, chasing down postings to rate — stop being manual.
+**[WORKING-WITH-AN-AGENT.md](WORKING-WITH-AN-AGENT.md)** covers how to set that up, and
+more importantly the rules worth being strict about: never let it submit an application,
+never let it guess at anything with legal weight, and never let it inflate a fit rating.
+
 ---
 
 ## Scripts

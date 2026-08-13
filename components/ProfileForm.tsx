@@ -6,6 +6,7 @@ import { Check, LoaderCircle, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input, Textarea, Label } from '@/components/ui/input';
 import { ResumeUpload } from '@/components/ResumeUpload';
+import { MasterResume } from '@/components/MasterResume';
 import { PROFILE_FIELDS, type Profile } from '@/lib/profile';
 
 const SECTIONS: {
@@ -164,6 +165,15 @@ export function ProfileForm({
           </p>
         </div>
       )}
+
+      <MasterResume
+        initial={{
+          filename: profile.resume_filename,
+          contentType: profile.resume_content_type,
+          uploadedAt: profile.resume_uploaded_at,
+          text: profile.resume_text,
+        }}
+      />
 
       <ResumeUpload hasContent={hasContent} onApply={applyImport} />
 

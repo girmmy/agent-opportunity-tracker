@@ -38,6 +38,9 @@ Radix primitives · Vercel
   you sent and a link to the original listing.
 - **Upload your résumé** and the profile fills itself in — PDF, DOCX, or text, parsed
   locally.
+- **A master résumé, previewable in the app** — the actual file, distinct from the
+  free-text profile fields, included verbatim whenever anything reads your profile.
+  Replacing it asks for confirmation first, since agents treat it as authoritative.
 - **Optional AI assist** — paste a posting and pre-fill the form, get an honest fit read, or
   tailor your résumé against it. Tailoring only reorders and rewords what's already in your
   profile; it will tell you when a gap is real rather than papering over it. All off unless
@@ -290,6 +293,21 @@ instead.
 
 Set your name in **Profile** — it's used for the filename, and without it you get a
 description of yourself where your name should be.
+
+**Master résumé** — a separate section on the Profile page from the quick-fill uploader
+above. That one only fills the text fields and never persists a file; this one keeps the
+actual file — previewed inline, downloadable, and included verbatim whenever anything reads
+your profile: fit ratings, tailoring, the agent API, a scheduled digest. It exists because
+the fields above are your own summary and can drift from what the résumé itself says; this
+is the literal document you send out.
+
+Replacing it asks first. It's the one artifact everything else — including any automation
+running unattended — treats as authoritative, so a stray upload shouldn't silently swap it
+out from under you. The first upload, with nothing yet to lose, doesn't ask.
+
+Implementation: `app/api/profile/resume/route.ts`, `components/MasterResume.tsx`. Stored as
+`bytea` on the profile row rather than object storage — one file, one user, well under a
+few MB, not worth a storage bucket and its own auth model.
 
 Implementation: `lib/ai.ts`, `app/api/ai/*`. Structured output via Zod schemas so
 responses are validated rather than string-parsed, and API errors are mapped to

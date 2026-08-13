@@ -46,6 +46,32 @@ const nextConfig = {
           },
         ],
       },
+      {
+        // The résumé-preview iframe on the profile page embeds this one route
+        // from the app itself. The blanket frame-ancestors 'none' above blocks
+        // that too — same-origin framing isn't exempted by default — so this
+        // narrower, later-defined block overrides just the two frame-control
+        // headers for this one path. Session auth on the route itself is the
+        // real boundary; nothing here weakens it for anything else.
+        source: '/api/profile/resume',
+        headers: [
+          { key: 'X-Frame-Options', value: 'SAMEORIGIN' },
+          {
+            key: 'Content-Security-Policy',
+            value: [
+              "default-src 'self'",
+              "script-src 'self'",
+              "style-src 'self' 'unsafe-inline'",
+              "img-src 'self' data: blob:",
+              "font-src 'self' data:",
+              "connect-src 'self'",
+              "frame-ancestors 'self'",
+              "base-uri 'self'",
+              "form-action 'self'",
+            ].join('; '),
+          },
+        ],
+      },
     ];
   },
 };

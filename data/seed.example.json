@@ -68,5 +68,45 @@
     "details": {
       "start_date": "2026-06-01"
     }
+  },
+  {
+    "organization": "Fabrikam",
+    "role": "Fall Build Weekend",
+    "opportunity_type": "Hackathon",
+    "category": "SWE",
+    "cycle": "Fall 2026",
+    "status": "Not Applied Yet",
+    "fit": "Good",
+    "date_applied": null,
+    "deadline": "2026-09-20",
+    "listing_url": "https://example.com/hackathons/fabrikam-fall",
+    "resume_used": null,
+    "source": "web search",
+    "notes": "Team of up to 4; solo entries allowed.",
+    "details": {
+      "event_dates": "2026-10-04 to 2026-10-05",
+      "team_size": 4
+    }
+  },
+  {
+    "organization": "Adventure Works Foundation",
+    "role": "Undergraduate Scholarship",
+    "opportunity_type": "Scholarship",
+    "category": "Other",
+    "cycle": "2026-27",
+    "status": "Not Applied Yet",
+    "fit": "Good",
+    "date_applied": null,
+    "deadline": "2026-11-01",
+    "listing_url": "https://example.com/scholarships/adventure-works",
+    "resume_used": null,
+    "source": "target list",
+    "notes": "Recommender letter due 2026-10-18 — earlier than the main deadline, request it well ahead.",
+    "details": {
+      "essay_required": true,
+      "recommenders": 1,
+      "transcript_required": true,
+      "award_amount": 2500
+    }
   }
 ]

@@ -32,8 +32,9 @@ Radix primitives · Vercel
   where everything stands, and a nudge for applications that have gone quiet.
 - **Everything in one table** — filter by type, status, fit, or cycle; show and hide
   columns; sort; edit inline. Table on desktop, cards on mobile.
-- **Five opportunity types** — Internship, Contract, Program, Research, Full-time —
-  tracked across multiple cycles, so it doesn't go stale after one season.
+- **Seven opportunity types** — Internship, Contract, Program, Research, Hackathon,
+  Scholarship, Full-time — tracked across multiple cycles, so it doesn't go stale after
+  one season.
 - **A fit rating** you set honestly (Strong / Good / Weak / Unknown), plus which résumé
   you sent and a link to the original listing.
 - **Upload your résumé** and the profile fills itself in — PDF, DOCX, or text, parsed
@@ -323,14 +324,14 @@ right now" a single query instead of a six-way union.
 
 | Field | Notes |
 |---|---|
-| `opportunity_type` | Internship · Contract · Program · Research · Full-time |
+| `opportunity_type` | Internship · Contract · Program · Research · Hackathon · Scholarship · Full-time |
 | `category` | SWE · AI/ML · Product · Data · Research · Other · Unclear |
 | `cycle` | Free text — `Summer 2027`, `Ongoing`. This is what makes it multi-year: filter by cycle, archive old ones rather than deleting. |
 | `status` | Not Applied Yet → In Progress → Waiting → Interview → Offer Received → Accepted / Active → Completed. Plus Not Yet Open (target program hasn't posted its next cycle — nothing to apply to yet), Return Offer, Rejected, Withdrawn / Lapsed. |
 | `fit` | Strong / Good / Weak / Unknown. Rate it only after actually reading the posting — `Unknown` is the honest default. |
 | `resume_used` | Filename of whatever you submitted |
 | `listing_url` | The original posting |
-| `details` | JSONB for type-specific extras (contract rate, interview date, research lab) — add a type without a migration |
+| `details` | JSONB for type-specific extras (contract rate, interview date, research lab, or for a Scholarship: `essay_required`, `recommenders`, `transcript_required`, `award_amount`) — add a type without a migration |
 | `suggested_by_agent` | True when an agent surfaced the row itself; the UI labels it **Suggested** so it's clear you never asked for it |
 
 ---

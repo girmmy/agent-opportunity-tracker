@@ -499,6 +499,14 @@ I'll trust the tracker and stop checking.
 Append to notes, never replace. Use YYYY-MM-DD. Trust an explicit date from a
 calendar invite or ticket reply over your own arithmetic.
 
+## Capture the posting yourself
+When a row has a `listing_url` and `notes` doesn't already contain real posting
+text, fetch that URL and save what it actually says — responsibilities,
+requirements, qualifications — into `notes`. Don't wait for me to paste it in.
+If the page won't load (auth wall, JS-only, 404), say so and use whatever text
+is available instead (the source email, a search snippet); only skip this
+entirely when nothing is available anywhere.
+
 ## Fit ratings stay honest
 Only rate Strong/Good/Weak after actually reading the posting. A job title from
 a confirmation email means Unknown. Never infer fit from a company's prestige,
@@ -506,8 +514,15 @@ size, or how appealing the role sounds — a famous company with a mismatched
 stack is a weak fit. Name specific technologies and requirements; "good culture
 fit" is noise. Flag hard eligibility barriers separately from skill fit.
 
-Each run, try to upgrade a couple of Unknown rows by finding and reading the
-real posting. Prefer open rows still awaiting a reply.
+Rate fit in the same pass you capture a posting — new row or existing one you
+just filled in. Each run, also try to upgrade a couple of older Unknown rows by
+finding and reading the real posting. Prefer open rows still awaiting a reply.
+
+## Résumé tailoring is opt-in only
+Capturing postings and rating fit happen automatically above. Generating an
+actual tailored résumé does not — only do that when I've explicitly asked for
+one on a specific posting in the current conversation. A Strong fit rating or
+an upcoming deadline is not a request; don't treat it as one.
 
 ## Telling me
 Notify me — a push notification, one line, under 200 characters. Not an email

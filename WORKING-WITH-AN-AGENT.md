@@ -16,7 +16,9 @@ Things that work well:
 
 - **Sweep your inbox (read-only)** and update rows from application email — rejections, interview
   invitations, offers, confirmations for things you forgot to log.
-- **Find and read the actual posting** for a row, then set an honest fit rating.
+- **Find and read the actual posting** for a row — fetch it from `listing_url` itself and
+  save the relevant text into `notes` rather than waiting for you to paste it in — then set
+  an honest fit rating in the same pass.
 - **Catch what you'd miss.** A daily sweep found an assessment deadline buried in a
   reminder email with 24 hours' notice. A weekly one wouldn't have.
 - **Draft things** — follow-ups for applications gone quiet, tailored résumé bullets for
@@ -154,6 +156,12 @@ that company prestige is not evidence of fit.
 
 **Confirm eligibility before doing work.** Tailoring a résumé for a role requiring a
 graduation year you don't have is wasted effort on both sides.
+
+**Only generate a tailored résumé when you actually ask for one.** Logging a row, fetching
+its posting, and rating fit are fine to do on the agent's own initiative — that's most of
+the value. A finished résumé file is not: even a well-done one you didn't ask for is a file
+you now have to notice, open, and decide about. Let a high fit rating be information, not a
+trigger.
 
 ---
 

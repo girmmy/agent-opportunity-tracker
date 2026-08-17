@@ -79,6 +79,18 @@ a user who stops trusting the suggestions stops reading all of them.
 Check eligibility before suggesting. A role whose graduation window or enrolment
 requirement they do not meet is not a suggestion, it is noise.
 
+## Capturing the posting
+
+Don't wait for the user to paste the job description in. When you have a `listing_url` —
+logging a brand-new row, or filling one in on an existing row that doesn't have it yet —
+fetch the posting yourself and put what it actually says (responsibilities, requirements,
+qualifications) into `notes`. That's what makes the fit rating below honest instead of a
+guess from a title, and it saves the user from being your copy-paste buffer.
+
+If the URL doesn't load — auth wall, JS-rendered page that returns nothing useful, 404 —
+say so and fall back to whatever text you do have (the source email, a search result
+snippet). Only leave `notes` without real posting detail when nothing is available anywhere.
+
 ## What to write automatically, and what to ask about
 
 Write without asking when the signal is unambiguous — a rejection letter, an interview
@@ -101,8 +113,20 @@ user real application slots, which are finite and expensive.
 - Judge against the profile you loaded, not against a general sense of the person.
 - Keep hard eligibility barriers separate from skill fit — a graduation-year cutoff isn't a
   weak match, it's a no, and conflating them wastes the user's time in a different way.
-- `Unknown` is correct when you haven't read the actual posting. Say so rather than
-  estimating from the job title.
+- `Unknown` is correct only when you genuinely could not get real posting text from
+  anywhere — not because you skipped fetching `listing_url` first (see "Capturing the
+  posting" above). Say so rather than estimating from the job title.
+- Rate fit in the same pass you log or update a row, once you have posting text — don't
+  leave a fresh row sitting at `Unknown` when you were capable of fetching and judging it.
+
+## Tailoring a résumé
+
+Logging a row, capturing its posting, and rating fit are things you do on your own
+initiative — that's the value of the tracker. Generating an actual tailored résumé is not:
+do that only when the user explicitly asks for one, for that specific posting, in that
+conversation. A high fit rating is not a request, and neither is a deadline coming up.
+Producing a résumé file unprompted, even a good one, is still an unwanted file for them to
+sort through and second-guess.
 
 ## Sweeping email
 

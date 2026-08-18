@@ -1,10 +1,22 @@
 import { supabaseAdmin, isSupabaseConfigured } from '@/lib/supabase';
 import type { Opportunity } from '@/lib/types';
+import type { Task, Contact, Activity } from '@/lib/workspace';
 
 export interface LoadResult {
   opportunities: Opportunity[];
   configured: boolean;
   error: string | null;
+}
+
+export async function loadWorkspace() {
+  if (!isSupabaseConfigured()) return { tasks: [] as Task[], contacts: [] as Contact[], activity: [] as Activity[] };
+  const db = supabaseAdmin();
+  const [tasks, contacts, activity] = await Promise.all([
+    db.from('tasks').select('*').order('due_date', { ascending: true, nullsFirst: false }),
+    db.from('contacts').select('*').order('name'),
+    db.from('activity').select('*').order('occurred_at', { ascending: false, nullsFirst: false }),
+  ]);
+  return { tasks: (tasks.data ?? []) as Task[], contacts: (contacts.data ?? []) as Contact[], activity: (activity.data ?? []) as Activity[] };
 }
 
 /**

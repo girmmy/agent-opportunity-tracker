@@ -2,12 +2,15 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { House, LayoutList, LogOut, Settings2 } from 'lucide-react';
+import { House, LayoutList, LogOut, Settings2, CheckSquare, Users, Scale } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const TABS = [
   { href: '/', label: 'Overview', icon: House },
   { href: '/opportunities', label: 'All', icon: LayoutList },
+  { href: '/tasks', label: 'Tasks', icon: CheckSquare },
+  { href: '/contacts', label: 'Contacts', icon: Users, compact: true },
+  { href: '/decisions', label: 'Decisions', icon: Scale, compact: true },
   // Icon-only on phones so three tabs still fit at 375px.
   { href: '/settings', label: 'Profile', icon: Settings2, compact: true },
 ];
@@ -57,7 +60,7 @@ export function TopBar() {
                 href={tab.href}
                 aria-current={active ? 'page' : undefined}
                 className={cn(
-                  'flex min-h-11 items-center gap-1.5 rounded-[9px] px-4 text-[14.5px] font-medium transition-all duration-200 active:scale-[0.97]',
+                  'flex min-h-11 items-center gap-1.5 rounded-[9px] px-2 sm:px-3 text-[14.5px] font-medium transition-all duration-200 active:scale-[0.97]',
                   active
                     ? 'bg-[var(--surface)] text-[var(--label)] shadow-[var(--shadow-sm)]'
                     : 'text-[var(--label-2)] hover:text-[var(--label)]'

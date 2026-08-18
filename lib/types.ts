@@ -54,6 +54,10 @@ export interface Opportunity {
   source: string | null;
   notes: string | null;
   details: Record<string, unknown>;
+  next_action?: string | null;
+  next_action_due?: string | null;
+  fit_rationale?: string | null;
+  decision_details?: Record<string, unknown>;
   created_at: string;
   updated_at: string;
   /** True when an agent surfaced this itself rather than the user logging it. */
@@ -76,6 +80,10 @@ export const EDITABLE_FIELDS = [
   'source',
   'notes',
   'details',
+  'next_action',
+  'next_action_due',
+  'fit_rationale',
+  'decision_details',
   'suggested_by_agent',
 ] as const;
 

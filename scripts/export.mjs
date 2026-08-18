@@ -75,6 +75,11 @@ const { data: profile } = await supabase
   .select('*')
   .eq('id', true)
   .maybeSingle();
+const workspace = {};
+for (const table of ['tasks', 'contacts', 'activity']) {
+  const { data } = await supabase.from(table).select('*').order('created_at', { ascending: true });
+  workspace[table] = data ?? [];
+}
 
 const stamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
 const dir = new URL('../backups/', import.meta.url);
@@ -89,6 +94,7 @@ await writeFile(
       opportunity_count: opportunities.length,
       opportunities,
       profile: profile ?? null,
+      ...workspace,
     },
     null,
     2
@@ -111,6 +117,10 @@ const seedRows = opportunities.map((r) => ({
   source: r.source,
   notes: r.notes,
   details: r.details ?? {},
+  next_action: r.next_action ?? null,
+  next_action_due: r.next_action_due ?? null,
+  fit_rationale: r.fit_rationale ?? null,
+  decision_details: r.decision_details ?? {},
 }));
 
 await writeFile(

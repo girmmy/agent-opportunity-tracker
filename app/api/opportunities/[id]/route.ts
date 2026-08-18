@@ -30,7 +30,11 @@ export async function PATCH(
       return NextResponse.json({ error: 'No editable fields.' }, { status: 400 });
     }
 
-    const { data, error } = await supabaseAdmin()
+    const db = supabaseAdmin();
+    const { data: previous } = 'status' in updates
+      ? await db.from('opportunities').select('status').eq('id', id).maybeSingle()
+      : { data: null };
+    const { data, error } = await db
       .from('opportunities')
       .update(updates)
       .eq('id', id)
@@ -38,6 +42,9 @@ export async function PATCH(
       .single();
 
     if (error) throw error;
+    if (previous && previous.status !== data.status) {
+      await db.from('activity').insert({ opportunity_id: id, kind: 'Status change', body: `Status changed from ${previous.status} to ${data.status}.`, occurred_at: new Date().toISOString() });
+    }
     return NextResponse.json({ opportunity: data });
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';

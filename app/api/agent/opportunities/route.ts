@@ -14,9 +14,10 @@ export const dynamic = 'force-dynamic';
  * deliberately skips this path so the check below is the only gate.
  */
 
+export const agentWritableFields = EDITABLE_FIELDS;
 function pickEditable(body: Record<string, unknown>) {
   const out: Record<string, unknown> = {};
-  for (const field of EDITABLE_FIELDS) {
+  for (const field of agentWritableFields) {
     if (field in body) out[field] = body[field];
   }
   return out;

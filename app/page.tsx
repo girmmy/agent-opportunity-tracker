@@ -2,7 +2,7 @@ import * as React from 'react';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { ArrowUpRight, ChevronRight, Inbox } from 'lucide-react';
-import { loadOpportunities } from '@/lib/data';
+import { loadOpportunities, loadWorkspace } from '@/lib/data';
 import { hasSession } from '@/lib/guard';
 import { collectEvents } from '@/lib/dates';
 import { TopBar } from '@/components/TopBar';
@@ -119,7 +119,7 @@ function SectionHeader({
 export default async function OverviewPage() {
   if (!(await hasSession())) redirect('/login');
 
-  const { opportunities, configured, error } = await loadOpportunities();
+  const [{ opportunities, configured, error }, { tasks }] = await Promise.all([loadOpportunities(), loadWorkspace()]);
 
   const active = opportunities.filter((o) => ACTIVE_STATUSES.includes(o.status));
   const interviewing = opportunities.filter(
@@ -151,6 +151,20 @@ export default async function OverviewPage() {
         activeCount={active.length}
         awaitingCount={awaiting.length}
       />
+
+      {tasks.filter((task) => task.status === 'Open' || task.status === 'In Progress').length > 0 && (
+        <section className="rise mb-6" style={{ '--d': '390ms' } as React.CSSProperties}>
+          <SectionHeader title="Act next" href="/tasks" />
+          <div className="overflow-hidden rounded-[var(--radius-apple-lg)] bg-[var(--surface)] shadow-[var(--shadow-sm)]">
+            {tasks.filter((task) => task.status === 'Open' || task.status === 'In Progress').slice(0, 5).map((task) => (
+              <div key={task.id} className="border-b border-[var(--separator)] px-4 py-3 last:border-0">
+                <div className="font-medium text-[14px]">{task.title}</div>
+                <div className="text-[12.5px] text-[var(--label-3)]">{task.due_date ? `Due ${task.due_date}` : task.priority}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <div className="rise" style={{ '--d': '420ms' } as React.CSSProperties}>
         <StaleNudge rows={opportunities} />

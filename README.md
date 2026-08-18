@@ -30,6 +30,11 @@ Radix primitives · Vercel
 
 - **Overview** — a greeting, what's happening in the next few days, a pipeline bar showing
   where everything stands, and a nudge for applications that have gone quiet.
+- **A connected workspace** — Tasks handles both personal to-dos and work tied to an
+  opportunity; Contacts keeps recruiters, professors, and collaborators with that context;
+  Decisions makes live offers comparable without turning them into a simplistic score.
+- **History that stays put** — activity records status changes, interviews, follow-ups, and
+  manual notes chronologically instead of losing the story inside one editable note.
 - **Everything in one table** — filter by type, status, fit, or cycle; show and hide
   columns; sort; edit inline. Table on desktop, cards on mobile.
 - **Seven opportunity types** — Internship, Contract, Program, Research, Hackathon,
@@ -333,6 +338,14 @@ right now" a single query instead of a six-way union.
 | `listing_url` | The original posting |
 | `details` | JSONB for type-specific extras (contract rate, interview date, research lab, or for a Scholarship: `essay_required`, `recommenders`, `transcript_required`, `award_amount`) — add a type without a migration |
 | `suggested_by_agent` | True when an agent surfaced the row itself; the UI labels it **Suggested** so it's clear you never asked for it |
+| `next_action` / `next_action_due` | The explicit thing to do next; Overview elevates tasks and these actions before the pipeline |
+| `fit_rationale` | Evidence, gaps, and eligibility caveats behind a fit rating |
+| `decision_details` | Offer compensation, location, work mode, deadline, pros, concerns, and outcome |
+
+Three related tables provide `tasks`, `contacts`, and append-only `activity`. A task and
+contact can optionally point to an opportunity, but standalone personal tasks are equally
+first-class. Links use `ON DELETE SET NULL`, so deleting an opportunity never deletes work
+or personal relationship history.
 
 ---
 

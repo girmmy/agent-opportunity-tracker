@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "typecheck": "tsc --noEmit",
+    "test": "vitest run",
     "hash-password": "node scripts/hash-password.mjs",
     "migrate": "node scripts/migrate.mjs",
     "seed": "node scripts/seed.mjs",
@@ -46,6 +47,7 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "pg": "^8.23.0",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "vitest": "^4.1.10"
   }
 }

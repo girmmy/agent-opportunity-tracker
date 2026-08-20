@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Apply everything in supabase/migrations/ to the database.
+ * Apply everything in supabase/migrations/ to the database that hasn't run yet.
  *
  * Run:  npm run migrate
  *
@@ -8,8 +8,13 @@
  * machine — the connection string is never committed, and it doesn't need to be
  * pasted into a chat for this to run.
  *
- * Idempotent: the migration itself uses `if not exists` / `or replace`, and
- * enum creation is guarded, so re-running is safe.
+ * Tracks applied migrations in a `schema_migrations` table (filename + when),
+ * so each file runs at most once. This matters because not every migration is
+ * actually safe to replay from scratch: 0007 rebuilds the opportunity_type enum
+ * to a version that predates 'Hackathon' (added later in 0011), so blindly
+ * re-running the full sequence against a database that already has Hackathon
+ * rows fails the enum rebuild. Tracking which files already ran avoids that
+ * regardless of whether any individual file is itself idempotent.
  */
 
 import { readFile, readdir } from 'node:fs/promises';
@@ -89,14 +94,31 @@ try {
   process.exit(1);
 }
 
-console.log(`Connected. Applying ${files.length} migration(s)…\n`);
+await client.query(`
+  create table if not exists schema_migrations (
+    filename text primary key,
+    applied_at timestamptz not null default now()
+  )
+`);
+const { rows: appliedRows } = await client.query('select filename from schema_migrations');
+const applied = new Set(appliedRows.map((r) => r.filename));
+const pending = files.filter((f) => !applied.has(f));
+
+if (pending.length === 0) {
+  console.log('Nothing to do — all migrations already applied.\n');
+  await client.end();
+  process.exit(0);
+}
+
+console.log(`Connected. Applying ${pending.length} pending migration(s) (${files.length - pending.length} already applied)…\n`);
 
 let failed = false;
-for (const file of files) {
+for (const file of pending) {
   const sql = await readFile(new URL(file, dir), 'utf8');
   process.stdout.write(`  ${file} … `);
   try {
     await client.query(sql);
+    await client.query('insert into schema_migrations (filename) values ($1)', [file]);
     console.log('ok');
   } catch (err) {
     console.log('FAILED');
